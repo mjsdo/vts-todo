@@ -14,10 +14,47 @@ interface RouteEntry {
 export default class Router {
   $routerRoot: HTMLElement;
   table: RouteEntry[] = [];
+  anchorElementRouteAttribute = 'route';
 
   constructor($routerRoot: HTMLElement, table: RouteEntry[]) {
     this.$routerRoot = $routerRoot;
     this.table = table;
+    this.setEvents();
+  }
+
+  setEvents() {
+    /** 새로고침 */
+    document.addEventListener(
+      'DOMContentLoaded',
+      () => {
+        this.route();
+      },
+      {
+        once: true,
+      },
+    );
+
+    /** 링크 클릭 (a태그에 route 어트리뷰트가 있는 경우에만) */
+    this.$routerRoot.addEventListener('click', (e: MouseEvent) => {
+      if (e.target instanceof HTMLElement) {
+        const $origin = e.target.closest(
+          `a[${this.anchorElementRouteAttribute}]`,
+        );
+
+        if (!$origin) return;
+
+        e.preventDefault();
+
+        const url = $origin.getAttribute('href');
+
+        if (url) this.navigate(url);
+      }
+    });
+
+    /** 뒤로가기와 앞으로가기 */
+    window.addEventListener('popstate', () => {
+      this.route();
+    });
   }
 
   navigate(deltaOrUrl: string | number) {
