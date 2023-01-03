@@ -45,6 +45,10 @@ export type DelegateEvent = <
   listener: typeof handler;
 };
 
+/**
+ * - 반환: 위임한 이벤트 정보 `{ eventName: 이벤트, listener: 이벤트리스너 }`
+ * - 반환값은 컴포넌트에서 이벤트를 지워야 할 때 사용한다.
+ */
 export const delegateEvent: DelegateEvent = (
   target,
   eventName,
