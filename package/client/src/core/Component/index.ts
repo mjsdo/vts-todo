@@ -43,6 +43,10 @@ export default abstract class Component<S = unknown, P = unknown> {
     this.appendChildComponent();
   }
 
+  /**
+   * - render에서 세부적인 행동을 정의하지 말고, 리액트처럼 마크업 구조만 반환
+   * - DOM조작은 _render 메서드에 위임
+   */
   abstract render(): string;
 
   mount(): void {
@@ -81,6 +85,16 @@ export default abstract class Component<S = unknown, P = unknown> {
     this.eventListeners.clear();
   }
 
+  /**
+   * - map 메서드로 마크업 배열을 반환할 때, `join('')` 자동으로 추가하려고 만든 메서드.
+   *
+   * ```ts
+   *   const state = ['item1', 'item2'];
+   *   const templates = this
+   *     .wrap(state)
+   *     .map((item) => `<li>${item}</li>`)
+   * ```
+   */
   wrap(templateArr: string[]) {
     return {
       map(callback: (value: string, i: number, arr: string[]) => string) {
@@ -89,3 +103,6 @@ export default abstract class Component<S = unknown, P = unknown> {
     };
   }
 }
+
+// $parent에 위임한 이벤트는 unmount되거나 $parent가 dom에서 없어지면 사라짐
+// document나 window에 등록하는 이벤트는? --> 전용 메서드를 만들어야 할듯??
