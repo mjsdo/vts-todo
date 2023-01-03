@@ -1,0 +1,13 @@
+{
+  "name": "vts-todo",
+  "packageManager": "yarn@3.3.1",
+  "workspaces": {
+    "packages": [
+      "package/*"
+    ]
+  },
+  "scripts": {
+    "client": "yarn workspace client",
+    "server": "yarn workspace server"
+  }
+}
