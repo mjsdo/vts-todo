@@ -84,24 +84,6 @@ export default abstract class Component<S = unknown, P = unknown> {
     });
     this.eventListeners.clear();
   }
-
-  /**
-   * - map 메서드로 마크업 배열을 반환할 때, `join('')` 자동으로 추가하려고 만든 메서드.
-   *
-   * ```ts
-   *   const state = ['item1', 'item2'];
-   *   const templates = this
-   *     .wrap(state)
-   *     .map((item) => `<li>${item}</li>`)
-   * ```
-   */
-  wrap(templateArr: string[]) {
-    return {
-      map(callback: (value: string, i: number, arr: string[]) => string) {
-        return templateArr.map(callback).join('');
-      },
-    };
-  }
 }
 
 // $parent에 위임한 이벤트는 unmount되거나 $parent가 dom에서 없어지면 사라짐
