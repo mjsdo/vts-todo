@@ -5,7 +5,8 @@ import type {
   ColumnTitle,
   AddItemField,
   UpdateItemField,
-} from './type';
+ TodoColumn } from './type';
+
 
 const createItemObject = (item: Partial<TodoItem>): TodoItem => ({
   id: crypto.randomUUID(),
@@ -32,7 +33,7 @@ export const MODE = {
   RW: 'readwrite',
 } as const;
 
-export default class DB {
+export default class IDB {
   private initialized = false;
   private VERSION = 1;
   private db!: IDBDatabase; /** this.getDB()로 먼저 체크하기 */
@@ -128,7 +129,7 @@ export default class DB {
     });
   }
 
-  getAllColumns() {
+  getAllColumns(): Promise<TodoColumn[]> {
     const db = this.getDB();
     const columnTitles = Object.values(COLUMN_TITLE);
     const transaction = db.transaction(columnTitles, MODE.R);
@@ -147,7 +148,7 @@ export default class DB {
       );
   }
 
-  getColumn(columnTitle: ColumnTitle) {
+  getColumn(columnTitle: ColumnTitle): Promise<TodoColumn> {
     const db = this.getDB();
     const transaction = db.transaction([columnTitle], MODE.R);
     const objectStore = transaction.objectStore(columnTitle);
