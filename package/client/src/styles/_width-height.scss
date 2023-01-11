@@ -3,12 +3,12 @@ $sizes: (min, min-content), (max, max-content), (fit, fit-content), (full, 100%)
 $denominators: 2, 3, 4, 5, 6, 12;
 
 @each $denominator in $denominators {
-  @for $numerator from 1 to ($denominator - 1) {
+  @for $numerator from 1 to ($denominator) {
     .w-#{$numerator}-#{$denominator} {
-      width: math.div($numerator, $denominator) * 1%;
+      width: math.div($numerator, $denominator) * 100%;
     }
     .h-#{$numerator}-#{$denominator} {
-      height: math.div($numerator, $denominator) * 1%;
+      height: math.div($numerator, $denominator) * 100%;
     }
   }
 }

@@ -31,19 +31,19 @@ $common: (
 
 :root {
   @each $key, $value in $common {
-    --#{$key}: $value;
+    --#{$key}: #{$value};
   }
 }
 
-body.light {
+body[data-theme='light'] {
   @each $key, $value in $light {
-    --#{$key}: $value;
+    --#{$key}: #{$value};
   }
 }
 
-body.dark {
+body[data-theme='dark'] {
   @each $key, $value in $dark {
-    --#{$key}: $value;
+    --#{$key}: #{$value};
   }
 }
 
