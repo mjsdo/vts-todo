@@ -33,6 +33,7 @@ export default class Router implements RouterInterface {
     this.$routerRoot = $routerRoot;
     this.table = table;
     this.setEvents();
+    this.route();
   }
 
   get context() {
