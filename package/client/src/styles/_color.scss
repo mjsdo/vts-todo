@@ -47,7 +47,7 @@ body.dark {
   }
 }
 
-@each $key in $light {
+@each $key, $value in $light {
   .text-#{$key} {
     color: var(--#{$key});
   }
@@ -62,7 +62,7 @@ body.dark {
   }
 }
 
-@each $key in $common {
+@each $key, $value in $common {
   .text-#{$key} {
     color: var(--#{$key});
   }
