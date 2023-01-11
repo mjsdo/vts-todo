@@ -9,10 +9,10 @@ export default abstract class Component<S = unknown, P = unknown> {
   private readonly id = crypto.randomUUID();
   eventListeners: ComponentEventListeners[] = [];
   $parent: HTMLElement;
-  state?: S;
-  props?: P;
+  state = {} as S;
+  props: P;
 
-  constructor($parent: HTMLElement, props?: P) {
+  constructor($parent: HTMLElement, props = {} as P) {
     this.$parent = $parent;
     this.props = props;
     requestAnimationFrame(() => {
