@@ -10,10 +10,10 @@
 !.yarn/cache
 #.pnp.*
 
-env/*
-build/*
-dist/*
-coverage/*
+**/env/*
+**/build/*
+**/dist/*
+**/coverage/*
 .idea/
 *.pem
 *.log

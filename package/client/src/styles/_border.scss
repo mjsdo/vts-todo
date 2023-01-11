@@ -1,0 +1,49 @@
+$roundedSizes: (none, 0px), (sm, 2px), (md, 6px), (lg, 8px), (xl, 12px),
+  (2xl, 16px), (3xl, 24px), (full, 9999px);
+
+$dirs: (t, top), (b, bottom), (l, left), (r, right);
+
+@each $roundedSize in $roundedSizes {
+  .rounded-#{nth($roundedSize, 1)} {
+    border-radius: #{nth($roundedSize, 2)};
+  }
+}
+
+.rounded {
+  border-radius: 4px;
+}
+
+@for $borderSize from 0 to 5 {
+  .border-#{borderSize} {
+    border-width: #{$borderSize}px;
+  }
+  .border-x-#{borderSize} {
+    border-left-width: #{$borderSize}px;
+    border-right-width: #{$borderSize}px;
+  }
+  .border-y-#{borderSize} {
+    border-top-width: #{$borderSize}px;
+    border-bottom-width: #{$borderSize}px;
+  }
+  @each $dir in $dirs {
+    .border-#{nth($dir, 1)}-#{borderSize} {
+      border-#{nth($dir, 2)}-width: #{borderSize}px;
+    }
+  }
+}
+
+.border {
+  border-width: 1px;
+}
+@each $dir in $dirs {
+  .border-#{nth($dir, 1)} {
+    border-#{nth($dir, 2)}-width: 1px;
+  }
+}
+
+$styles: solid, dashed, dotted, double, hidden, none;
+@each $style in $styles {
+  .border-#{$style} {
+    border-style: #{$style};
+  }
+}

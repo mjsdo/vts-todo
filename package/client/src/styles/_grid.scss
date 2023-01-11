@@ -1,0 +1,57 @@
+.grid {
+  display: grid;
+}
+.inline-grid {
+  display: inline-grid;
+}
+
+.justify-self-start {
+  justify-self: start;
+}
+.justify-self-end {
+  justify-self: end;
+}
+.justify-self-center {
+  justify-self: center;
+}
+.justify-self-stretch {
+  justify-self: stretch;
+}
+
+.justify-items-start {
+  justify-items: start;
+}
+.justify-items-end {
+  justify-items: end;
+}
+.justify-items-center {
+  justify-items: center;
+}
+.justify-items-stretch {
+  justify-items: stretch;
+}
+
+$dirs: 'x', 'y';
+
+@for $size from 0 to 31 {
+  @if $size % 2 == 0 {
+    .gap-#{$size} {
+      gap: #{$size}px;
+    }
+  }
+}
+
+@each $dir in $dirs {
+  @for $size from 0 to 31 {
+    @if $size % 2 == 0 {
+      .gap-#{$dir}-#{$size} {
+        @if $dir == 'x' {
+          column-gap: #{$size}px;
+        }
+        @if $dir == 'y' {
+          row-gap: #{$size}px;
+        }
+      }
+    }
+  }
+}

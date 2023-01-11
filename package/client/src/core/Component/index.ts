@@ -1,10 +1,13 @@
 import { $, $$, delegateEvent } from './util';
 
+interface ComponentEventListeners {
+  listener: EventListener;
+  eventName: keyof HTMLElementEventMap;
+}
+
 export default abstract class Component<S = unknown, P = unknown> {
-  eventListeners = new Set<{
-    listener: EventListener;
-    eventName: keyof HTMLElementEventMap;
-  }>();
+  private readonly id = crypto.randomUUID();
+  eventListeners: ComponentEventListeners[] = [];
   $parent: HTMLElement;
   state?: S;
   props?: P;
@@ -17,11 +20,11 @@ export default abstract class Component<S = unknown, P = unknown> {
     });
   }
 
-  $<T extends Element>(selector: string) {
+  protected $<T extends Element>(selector: string) {
     return $<T>(selector, this.$parent);
   }
 
-  $$<T extends Element>(selector: string) {
+  protected $$<T extends Element>(selector: string) {
     return $$<T>(selector, this.$parent);
   }
 
@@ -31,14 +34,6 @@ export default abstract class Component<S = unknown, P = unknown> {
   }
 
   private _render(): void {
-    // const $componentFragment = createComponentElement({
-    //   template: this.render(),
-    // });
-    //
-    // const $componentRoot = $componentFragment.children[0] as HTMLElement;
-    //
-    // this.$componentRoot = $componentRoot;
-    // this.$parent.append($componentFragment);
     this.$parent.innerHTML = this.render();
     this.appendChildComponent();
   }
@@ -72,7 +67,7 @@ export default abstract class Component<S = unknown, P = unknown> {
     selector: string,
     eventListener: EventListener,
   ) {
-    this.eventListeners.add(
+    this.eventListeners.push(
       delegateEvent(this.$parent, eventName, selector, eventListener),
     );
   }
@@ -82,25 +77,7 @@ export default abstract class Component<S = unknown, P = unknown> {
     this.eventListeners.forEach(({ eventName, listener }) => {
       this.$parent.removeEventListener(eventName, listener);
     });
-    this.eventListeners.clear();
-  }
-
-  /**
-   * - map 메서드로 마크업 배열을 반환할 때, `join('')` 자동으로 추가하려고 만든 메서드.
-   *
-   * ```ts
-   *   const state = ['item1', 'item2'];
-   *   const templates = this
-   *     .wrap(state)
-   *     .map((item) => `<li>${item}</li>`)
-   * ```
-   */
-  wrap(templateArr: string[]) {
-    return {
-      map(callback: (value: string, i: number, arr: string[]) => string) {
-        return templateArr.map(callback).join('');
-      },
-    };
+    this.eventListeners.length = 0;
   }
 }
 

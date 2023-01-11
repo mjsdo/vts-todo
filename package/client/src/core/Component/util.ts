@@ -72,3 +72,22 @@ export const delegateEvent: DelegateEvent = (
     listener: _handler,
   };
 };
+
+/**
+ * ## 커스텀 배열 메서드를 사용하기 위해 배열을 wrap하는 함수.
+ *
+ * - map: 반환값에 `join('')` 자동 추가
+ *
+ * ```ts
+ *   const state = ['item1', 'item2'];
+ *   const template = wrap(state)
+ *      .map((item) => `<li>${item}</li>`)
+ *
+ *   template === `<li>item1</li><li>item2</li>`
+ * ```
+ */
+export const wrap = <T>(templateArr: T[]) => ({
+  map(callback: (value: T, i: number, arr: T[]) => string) {
+    return templateArr.map(callback).join('');
+  },
+});

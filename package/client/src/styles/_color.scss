@@ -1,0 +1,75 @@
+$light: (
+  'background': #f5f5f7,
+  'text': #010101,
+  'author': #bdbdbd,
+  'card': #ffffff,
+  'badgeBackground': #bdbdbd,
+  'accent': #0075de,
+  'accentHover': #00529b,
+  'accentDisabled': #86c6ff,
+  'delete': #ffeeec,
+  'deleteBorder': #ff4343,
+);
+
+$dark: (
+  'background': #4f4f61,
+  'text': #ffffff,
+  'author': #656565,
+  'card': #2b2b3d,
+  'badgeBackground': #010101,
+  'accent': #28c700,
+  'accentHover': #31f500,
+  'accentDisabled': #156800,
+  'delete': #ff8080,
+  'deleteBorder': #ff004d,
+);
+
+$common: (
+  'transparent': transparent,
+  'inherit': inherit,
+);
+
+:root {
+  @each $key, $value in $common {
+    --#{$key}: #{$value};
+  }
+}
+
+body[data-theme='light'] {
+  @each $key, $value in $light {
+    --#{$key}: #{$value};
+  }
+}
+
+body[data-theme='dark'] {
+  @each $key, $value in $dark {
+    --#{$key}: #{$value};
+  }
+}
+
+@each $key, $value in $light {
+  .text-#{$key} {
+    color: var(--#{$key});
+  }
+  .bg-#{$key} {
+    background-color: var(--#{$key});
+  }
+  .border-#{$key} {
+    border-color: var(--#{$key});
+  }
+  .fill-#{$key} {
+    fill: var(--#{$key});
+  }
+}
+
+@each $key, $value in $common {
+  .text-#{$key} {
+    color: var(--#{$key});
+  }
+  .bg-#{$key} {
+    color: var(--#{$key});
+  }
+  .border-#{$key} {
+    color: var(--#{$key});
+  }
+}

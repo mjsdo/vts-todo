@@ -3,7 +3,8 @@ import type Component from '../Component';
 import { navigate, getPath, compareUserPathWithRoutePath } from './util';
 
 interface RouterContext {
-  params?: Record<string, string>;
+  params: Record<string, string>;
+  path: string;
 }
 
 interface RouteEntry {
@@ -11,18 +12,46 @@ interface RouteEntry {
   matchHandler: (context?: RouterContext) => Component;
 }
 
-export default class Router {
-  $routerRoot: HTMLElement;
-  table: RouteEntry[] = [];
-  anchorElementRouteAttribute = 'route';
+interface RouterInterface {
+  context: RouterContext;
+  navigate: (deltaOrUrl: string | number) => void;
+}
+
+export default class Router implements RouterInterface {
+  private static routerInstance: Router;
+
+  private readonly $routerRoot: HTMLElement;
+  private readonly table: RouteEntry[] = [];
+  private readonly anchorElementRouteAttribute = 'route';
+  private routerContext!: RouterContext;
 
   constructor($routerRoot: HTMLElement, table: RouteEntry[]) {
+    if (Router.routerInstance) {
+      throw new Error('Router 는 여러번 생성할 수 없습니다.');
+    }
+    Router.routerInstance = this;
     this.$routerRoot = $routerRoot;
     this.table = table;
     this.setEvents();
   }
 
-  setEvents() {
+  get context() {
+    return this.routerContext;
+  }
+
+  navigate(deltaOrUrl: string | number) {
+    navigate(deltaOrUrl);
+    this.route();
+  }
+
+  static getInstance() {
+    if (!Router.routerInstance) {
+      throw new Error('생성된 Router 인스턴스가 없습니다.');
+    }
+    return Router.routerInstance;
+  }
+
+  private setEvents() {
     /** 새로고침 */
     document.addEventListener(
       'DOMContentLoaded',
@@ -57,12 +86,14 @@ export default class Router {
     });
   }
 
-  navigate(deltaOrUrl: string | number) {
-    navigate(deltaOrUrl);
-    this.route();
+  private setContext(newContext: RouterContext) {
+    this.routerContext = {
+      ...this.routerContext,
+      ...newContext,
+    };
   }
 
-  route() {
+  private route() {
     // 현재 경로를 얻어와서
     // 경로에 맞는 컴포넌트를 렌더링한다.
     const userPath = getPath();
@@ -77,8 +108,11 @@ export default class Router {
         continue;
       }
 
+      this.setContext({ params, path: userPath });
       this.$routerRoot.innerHTML = '';
-      matchHandler({ params });
+      matchHandler(this.context);
     }
   }
 }
+
+export const useRouter = () => Router.getInstance();
