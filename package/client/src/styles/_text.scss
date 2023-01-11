@@ -1,0 +1,37 @@
+.text-left {
+  text-align: left;
+}
+.text-center {
+  text-align: center;
+}
+.text-right {
+  text-align: right;
+}
+
+.font-normal {
+  font-weight: 400;
+}
+.font-bold {
+  font-weight: 700;
+}
+
+.tracking-tighter {
+  letter-spacing: -0.05em;
+}
+.tracking-tight {
+  letter-spacing: -0.025em;
+}
+.tracking-normal {
+  letter-spacing: 0;
+}
+
+$textSizes: (40px, 58px, -0.08em), (32px, 0, 0), (24px, 36px, -0.08em), (20px, 30px, -0.08em),
+  (16px, 26px, -0.08em), (14px, 24px, -0.08em), (12px, 18px, -0.04em);
+
+@each $textSize in $textSizes {
+  .text-s#{nth($textSize, 1)} {
+    font-size: nth($textSize, 1);
+    line-height: nth($textSize, 2);
+    letter-spacing: nth($textSize, 3);
+  }
+}

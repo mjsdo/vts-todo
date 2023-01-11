@@ -1,0 +1,13 @@
+$values: (auto, hidden, visible, scroll);
+$dirs: (x, y);
+
+@each $value in $values {
+  .overflow-#{$value} {
+    overflow: #{$value};
+  }
+  @each $dir in $dirs {
+    .overflow-#{$dir}-#{$value} {
+      overflow-#{$dir}: -#{$value};
+    }
+  }
+}

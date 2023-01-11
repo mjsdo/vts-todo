@@ -1,0 +1,75 @@
+$dirs: 'x', 'y', 'l', 'r', 't', 'b';
+
+.m-auto {
+  margin: auto;
+}
+
+.mx-auto {
+  margin: 0 auto;
+}
+
+.my-auto {
+  margin: auto 0;
+}
+
+@for $size from 0 to 61 {
+  @if $size % 2 == 0 {
+    .m-#{$size} {
+      margin: #{$size}px;
+    }
+    .p-#{$size} {
+      padding: #{$size}px;
+    }
+  }
+}
+
+@each $dir in $dirs {
+  @for $size from 0 to 61 {
+    @if $size % 2 == 0 {
+      .m#{$dir}-#{$size} {
+        @if $dir == 'x' {
+          margin-left: #{$size}px;
+          margin-right: #{$size}px;
+        }
+        @if $dir == 'y' {
+          margin-top: #{$size}px;
+          margin-bottom: #{$size}px;
+        }
+        @if $dir == 'l' {
+          margin-left: #{$size}px;
+        }
+        @if $dir == 'r' {
+          margin-right: #{$size}px;
+        }
+        @if $dir == 't' {
+          margin-top: #{$size}px;
+        }
+        @if $dir == 'b' {
+          margin-bottom: #{$size}px;
+        }
+      }
+      .p#{$dir}-#{$size} {
+        @if $dir == 'x' {
+          padding-left: #{$size}px;
+          padding-right: #{$size}px;
+        }
+        @if $dir == 'y' {
+          padding-top: #{$size}px;
+          padding-bottom: #{$size}px;
+        }
+        @if $dir == 'l' {
+          padding-left: #{$size}px;
+        }
+        @if $dir == 'r' {
+          padding-right: #{$size}px;
+        }
+        @if $dir == 't' {
+          padding-top: #{$size}px;
+        }
+        @if $dir == 'b' {
+          padding-bottom: #{$size}px;
+        }
+      }
+    }
+  }
+}
