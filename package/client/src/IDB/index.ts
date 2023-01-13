@@ -5,8 +5,8 @@ import type {
   ColumnTitle,
   AddItemField,
   UpdateItemField,
- TodoColumn } from './type';
-
+  TodoColumn,
+} from './type';
 
 const createItemObject = (item: Partial<TodoItem>): TodoItem => ({
   id: crypto.randomUUID(),
@@ -43,27 +43,25 @@ export default class IDB {
     this.dbName = dbName;
   }
 
-  init() {
+  init(): Promise<IDBDatabase> {
     return new Promise((resolve, reject) => {
       if (this.initialized) {
         reject(new Error('DB를 여러번 초기화할 수 없습니다.'));
+        return;
       }
-
-      this.initialized = true;
 
       const request = indexedDB.open(this.dbName, this.VERSION);
 
-      request.addEventListener('error', (event) => {
-        reject((event.target as IDBOpenDBRequest).error);
-      });
+      request.onerror = () => reject(request.error);
 
-      request.addEventListener('success', (event) => {
-        this.db = (event.target as IDBOpenDBRequest).result;
+      request.onsuccess = () => {
+        this.initialized = true;
+        this.db = request.result;
         resolve(this.db);
-      });
+      };
 
-      request.addEventListener('upgradeneeded', (event) => {
-        const db = (event.target as IDBOpenDBRequest).result;
+      request.onupgradeneeded = () => {
+        const db = request.result;
 
         Object.values(COLUMN_TITLE).forEach((value) => {
           const store = db.createObjectStore(value, {
@@ -72,7 +70,7 @@ export default class IDB {
 
           store.createIndex('weight', 'weight', { unique: true });
         });
-      });
+      };
     });
   }
 
@@ -87,12 +85,12 @@ export default class IDB {
 
     return new Promise((resolve, reject) => {
       const request = db
-        .transaction([columnTitle], MODE.RW)
+        .transaction(columnTitle, MODE.RW)
         .objectStore(columnTitle)
         .add(newItem);
 
       request.onsuccess = () => resolve(newItem);
-      request.onerror = (event) => reject((event.target as IDBRequest).error);
+      request.onerror = () => reject(request.error);
     });
   }
 
@@ -101,12 +99,12 @@ export default class IDB {
 
     return new Promise((resolve, reject) => {
       const request = db
-        .transaction([columnTitle], MODE.RW)
+        .transaction(columnTitle, MODE.RW)
         .objectStore(columnTitle)
         .delete(key);
 
       request.onsuccess = () => resolve(key);
-      request.onerror = (event) => reject((event.target as IDBRequest).error);
+      request.onerror = () => reject(request.error);
     });
   }
 
@@ -120,12 +118,12 @@ export default class IDB {
 
     return new Promise((resolve, reject) => {
       const request = db
-        .transaction([columnTitle], MODE.RW)
+        .transaction(columnTitle, MODE.RW)
         .objectStore(columnTitle)
         .put(newItem);
 
       request.onsuccess = () => resolve(newItem);
-      request.onerror = (event) => reject((event.target as IDBRequest).error);
+      request.onerror = () => reject(request.error);
     });
   }
 
@@ -167,9 +165,8 @@ export default class IDB {
       const values: TodoItem[] = [];
       const request = objectStore.openCursor();
 
-      request.onsuccess = (event) => {
-        const cursor = (event.target as IDBRequest)
-          .result as IDBCursorWithValue;
+      request.onsuccess = () => {
+        const cursor = request.result as IDBCursorWithValue;
 
         if (cursor) {
           values.push(cursor.value);
@@ -179,8 +176,7 @@ export default class IDB {
 
         resolve(values);
       };
-
-      request.onerror = (event) => reject((event.target as IDBRequest).error);
+      request.onerror = () => reject(request.error);
     });
   }
 }
