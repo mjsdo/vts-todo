@@ -1,5 +1,11 @@
 export type ColumnTitle = 'todo' | 'doing' | 'done';
 
+export const COLUMN_TITLE = {
+  TODO: 'todo',
+  DOING: 'doing',
+  DONE: 'done',
+} as const;
+
 export interface TodoItem {
   id: string;
   title: string;
