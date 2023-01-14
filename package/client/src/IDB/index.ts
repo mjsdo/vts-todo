@@ -38,7 +38,11 @@ export default class IDB {
     });
   }
 
-  put<V = unknown>(storeName: string, key: IDBValidKey, value: V): Promise<V> {
+  put<V = unknown>(
+    storeName: string,
+    key: IDBValidKey,
+    value: Partial<V>,
+  ): Promise<V> {
     return new Promise((resolve, reject) => {
       const request = this.getObjectStore(storeName, MODE.RW).openCursor(key);
 
@@ -46,11 +50,16 @@ export default class IDB {
         const cursor = request.result as IDBCursorWithValue;
 
         if (cursor) {
-          console.log(cursor.value);
-          // cursor.update(value);
-          // cursor.continue();
-          resolve(value);
+          const newValue = { ...cursor.value, ...value };
+          const updateRequest = cursor.update(newValue);
+
+          updateRequest.onsuccess = () => resolve(newValue);
+          updateRequest.onerror = () => reject(updateRequest.error);
+
+          return;
         }
+
+        reject(new Error('업데이트할 데이터가 없습니다.'));
       };
 
       request.onerror = () => reject(request.error);
