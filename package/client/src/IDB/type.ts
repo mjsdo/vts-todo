@@ -11,10 +11,11 @@ export interface TodoItem {
   title: string;
   body: string;
   createdAt: Date;
+  updatedAt: Date;
   weight: number;
 }
 
-export type AddItemField = Omit<TodoItem, 'id' | 'createdAt'>;
+export type TodoItemField = Omit<TodoItem, 'id' | 'createdAt' | 'updatedAt'>;
 export type UpdateItemField = TodoItem;
 
 export interface TodoColumn {
