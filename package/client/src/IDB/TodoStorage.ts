@@ -1,5 +1,5 @@
 import type {
-  AddItemField,
+  TodoItemField,
   ColumnTitle,
   TodoColumn,
   TodoItem,
@@ -9,14 +9,27 @@ import type {
 import IDB from '@IDB/index';
 import { COLUMN_TITLE } from '@IDB/type';
 
-const createItemObject = (item: Partial<TodoItem>): TodoItem => ({
-  id: crypto.randomUUID(),
-  createdAt: new Date(),
-  title: 'TITLE',
-  body: 'BODY',
-  weight: Infinity,
-  ...item,
-});
+const createItemObject = (item: TodoItemField) => {
+  const date = new Date();
+
+  return {
+    ...item,
+    id: crypto.randomUUID(),
+    createdAt: date,
+    updatedAt: date,
+  };
+};
+
+const createUpdateItemObject = (item: UpdateItemField) => {
+  const date = new Date();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { createdAt: deleted, ...withoutCreatedAt } = item;
+
+  return {
+    ...withoutCreatedAt,
+    updatedAt: date,
+  };
+};
 
 export default class TodoStorage {
   private initialized = false;
@@ -63,7 +76,7 @@ export default class TodoStorage {
     throw new Error('먼저 DB를 초기화 해야합니다.');
   }
 
-  addTodoItem(columnTitle: ColumnTitle, field: AddItemField) {
+  addTodoItem(columnTitle: ColumnTitle, field: TodoItemField) {
     const db = this.getDB();
     const newItem = createItemObject(field);
 
@@ -78,12 +91,12 @@ export default class TodoStorage {
 
   updateTodoItem(
     columnTitle: ColumnTitle,
-    key: number,
     field: UpdateItemField,
   ): Promise<TodoItem> {
     const db = this.getDB();
+    const newItem = createUpdateItemObject(field);
 
-    return db.put(columnTitle, key, field);
+    return db.put<TodoItem>(columnTitle, newItem.id, newItem);
   }
 
   async getAllTodoColumns(): Promise<TodoColumn[]> {
