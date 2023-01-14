@@ -33,15 +33,11 @@ export const MODE = {
   RW: 'readwrite',
 } as const;
 
-export default class IDB {
+export default class TodoStorage {
   private initialized = false;
   private VERSION = 1;
   private db!: IDBDatabase; /** this.getDB()로 먼저 체크하기 */
-  dbName = '';
-
-  constructor(dbName: string) {
-    this.dbName = dbName;
-  }
+  private dbName = 'todo-storage';
 
   init(): Promise<IDBDatabase> {
     return new Promise((resolve, reject) => {
@@ -49,13 +45,16 @@ export default class IDB {
         reject(new Error('DB를 여러번 초기화할 수 없습니다.'));
         return;
       }
+      this.initialized = true;
 
       const request = indexedDB.open(this.dbName, this.VERSION);
 
-      request.onerror = () => reject(request.error);
+      request.onerror = () => {
+        this.initialized = false;
+        reject(request.error);
+      }
 
       request.onsuccess = () => {
-        this.initialized = true;
         this.db = request.result;
         resolve(this.db);
       };
@@ -127,7 +126,7 @@ export default class IDB {
     });
   }
 
-  getAllColumns(): Promise<TodoColumn[]> {
+  async getAllColumns(): Promise<TodoColumn[]> {
     const db = this.getDB();
     const columnTitles = Object.values(COLUMN_TITLE);
     const transaction = db.transaction(columnTitles, MODE.R);
@@ -136,45 +135,36 @@ export default class IDB {
 
       return this.getAllItemsInObjectStore(objectStore);
     });
+    const columns = await Promise.all(promises);
 
-    return Promise.all(promises) //
-      .then((columns) =>
-        columns.map((todoList, idx) => ({
-          title: columnTitles[idx],
-          todoList,
-        })),
-      );
+    return columns.map((todoList, idx) => ({
+      title: columnTitles[idx],
+      todoList,
+    }));
   }
 
-  getColumn(columnTitle: ColumnTitle): Promise<TodoColumn> {
+  async getColumn(columnTitle: ColumnTitle): Promise<TodoColumn> {
     const db = this.getDB();
-    const transaction = db.transaction([columnTitle], MODE.R);
-    const objectStore = transaction.objectStore(columnTitle);
+    const objectStore = db
+      .transaction([columnTitle], MODE.R)
+      .objectStore(columnTitle);
 
-    return this.getAllItemsInObjectStore(objectStore) //
-      .then((todoList) => ({
-        title: columnTitle,
-        todoList,
-      }));
+    const todoList = await this.getAllItemsInObjectStore(objectStore); //
+
+    return {
+      title: columnTitle,
+      todoList,
+    };
   }
 
   private getAllItemsInObjectStore(
     objectStore: IDBObjectStore,
   ): Promise<TodoItem[]> {
     return new Promise((resolve, reject) => {
-      const values: TodoItem[] = [];
-      const request = objectStore.openCursor();
+      const request = objectStore.getAll() as IDBRequest<TodoItem[]>;
 
       request.onsuccess = () => {
-        const cursor = request.result as IDBCursorWithValue;
-
-        if (cursor) {
-          values.push(cursor.value);
-          cursor.continue();
-          return;
-        }
-
-        resolve(values);
+        resolve(request.result);
       };
       request.onerror = () => reject(request.error);
     });
