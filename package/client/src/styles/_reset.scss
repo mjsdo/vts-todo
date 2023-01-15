@@ -89,3 +89,12 @@ table {
   border-collapse: collapse;
   border-spacing: 0;
 }
+
+/* custom */
+
+button {
+  border: 0;
+  padding: 0;
+  background-color: transparent;
+  cursor: pointer;
+}
