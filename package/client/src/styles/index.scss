@@ -3,6 +3,7 @@
 @import 'color';
 @import 'flex';
 @import 'grid';
+@import 'transition';
 @import 'padding-margin';
 @import 'position';
 @import 'reset';
@@ -13,4 +14,9 @@
 * {
   font-family: 'Noto Sans KR', 'sans-serif';
   box-sizing: border-box;
+}
+
+#App {
+  max-width: 600px;
+  margin: 0 auto;
 }
