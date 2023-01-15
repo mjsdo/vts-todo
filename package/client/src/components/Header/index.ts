@@ -1,7 +1,7 @@
 import { BarIcon, DarkThemeIcon, LightThemeIcon } from '@components/Icons';
 import Component from '@core/Component';
 
-import { getBodyThemeAttr } from '../../theme';
+import { getBodyThemeAttr, setBodyThemeAttr } from '../../theme';
 
 interface State {
   theme: 'dark' | 'light';
@@ -31,5 +31,15 @@ export default class Header extends Component<State> {
          </div>
       </header>     
     `;
+  }
+
+  setEventListeners() {
+    /* handleClickThemeButton */
+    this.on('click', '[data-theme-button]', () => {
+      const nextTheme = this.state.theme === 'dark' ? 'light' : 'dark';
+
+      this.setState({ theme: nextTheme }); // theme 아이콘
+      setBodyThemeAttr(nextTheme); // class variable 변경
+    });
   }
 }
