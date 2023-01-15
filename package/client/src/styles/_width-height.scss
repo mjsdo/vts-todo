@@ -29,3 +29,49 @@ $denominators: 2, 3, 4, 5, 6, 12;
 .h-screen {
   height: 100vh;
 }
+
+@for $width from 0 through 60 {
+  @if $width % 4 == 0 {
+    .w-#{$width} {
+      width: #{$width * 1px};
+    }
+    .min-w-#{$width} {
+      min-width: #{$width * 1px};
+    }
+    .max-w-#{$width} {
+      max-width: #{$width * 1px};
+    }
+    .h-#{$width} {
+      height: #{$width * 1px};
+    }
+    .min-h-#{$width} {
+      min-height: #{$width * 1px};
+    }
+    .max-h-#{$width} {
+      max-height: #{$width * 1px};
+    }
+  }
+}
+
+@for $width from 61 through 600 {
+  @if $width % 12 == 0 {
+    .w-#{$width} {
+      width: #{$width * 1px};
+    }
+    .min-w-#{$width} {
+      min-width: #{$width * 1px};
+    }
+    .max-w-#{$width} {
+      max-width: #{$width * 1px};
+    }
+    .h-#{$width} {
+      height: #{$width * 1px};
+    }
+    .min-h-#{$width} {
+      min-height: #{$width * 1px};
+    }
+    .max-h-#{$width} {
+      max-height: #{$width * 1px};
+    }
+  }
+}

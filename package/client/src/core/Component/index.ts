@@ -28,9 +28,12 @@ export default abstract class Component<S = unknown, P = unknown> {
     return $$<T>(selector, this.$parent);
   }
 
-  setState(newState: S) {
-    this.state = newState;
-    this.update();
+  setState(newState: Partial<S>) {
+    this.state = {
+      ...this.state,
+      ...newState,
+    };
+    requestAnimationFrame(() => this.update());
   }
 
   private _render(): void {

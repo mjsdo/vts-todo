@@ -1,16 +1,17 @@
 import '@styles/index.scss';
 import Home from '@components/Home';
 import Router from '@core/Router';
-import IDB from '@IDB/index';
 
 import { initTheme } from './theme';
+import TodoStorage from './TodoStorage';
+
 
 const $App = document.querySelector('#App') as HTMLDivElement;
 
 initTheme();
-const db = new IDB('todo');
+const todoStorage = new TodoStorage();
 
-db.init().then(() => {
+todoStorage.init().then((db) => {
   new Router($App, [
     {
       path: '/',
