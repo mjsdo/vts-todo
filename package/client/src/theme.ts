@@ -14,9 +14,12 @@ export const initTheme = () => {
   localStorage.setItem(localStorageThemeKey, currentTheme);
 };
 
-export const toggleTheme = () => {
-  const nextTheme =
-    document.body.getAttribute(bodyDataThemeAttr) === 'dark' ? 'light' : 'dark';
+export const setBodyThemeAttr = (theme: Theme) => {
+  document.body.setAttribute(bodyDataThemeAttr, theme);
+};
 
-  document.body.setAttribute(bodyDataThemeAttr, nextTheme);
+export const getBodyThemeAttr = () => {
+  const theme = document.body.getAttribute(bodyDataThemeAttr);
+
+  return theme as Theme;
 };
