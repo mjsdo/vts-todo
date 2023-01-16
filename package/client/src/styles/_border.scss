@@ -13,21 +13,33 @@ $dirs: (t, top), (b, bottom), (l, left), (r, right);
   border-radius: 4px;
 }
 
-@for $borderSize from 0 to 5 {
-  .border-#{borderSize} {
+@for $borderSize from 0 through 4 {
+  .border-#{$borderSize} {
     border-width: #{$borderSize}px;
   }
-  .border-x-#{borderSize} {
+  .border-x-#{$borderSize} {
     border-left-width: #{$borderSize}px;
     border-right-width: #{$borderSize}px;
   }
-  .border-y-#{borderSize} {
+  .border-y-#{$borderSize} {
     border-top-width: #{$borderSize}px;
     border-bottom-width: #{$borderSize}px;
   }
+  .border-t-#{$borderSize} {
+    border-top-width: #{$borderSize}px;
+  }
+  .border-b-#{$borderSize} {
+    border-bottom-width: #{$borderSize}px;
+  }
+  .border-l-#{$borderSize} {
+    border-left-width: #{$borderSize}px;
+  }
+  .border-r-#{$borderSize} {
+    border-right-width: #{$borderSize}px;
+  }
   @each $dir in $dirs {
-    .border-#{nth($dir, 1)}-#{borderSize} {
-      border-#{nth($dir, 2)}-width: #{borderSize}px;
+    .border-#{nth($dir, 1)}-#{$borderSize} {
+      border-#{nth($dir, 2)}-width: #{$borderSize}px;
     }
   }
 }
@@ -35,6 +47,7 @@ $dirs: (t, top), (b, bottom), (l, left), (r, right);
 .border {
   border-width: 1px;
 }
+
 @each $dir in $dirs {
   .border-#{nth($dir, 1)} {
     border-#{nth($dir, 2)}-width: 1px;
