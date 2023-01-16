@@ -1,4 +1,4 @@
-export { $, $$ } from '../core/Component/util';
+export { $, $$ } from '@core/Component/util';
 
 export const classnames = (
   value: string | string[] | Record<string, boolean>,
