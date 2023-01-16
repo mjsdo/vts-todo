@@ -8,7 +8,7 @@ export default class Home extends Component {
       <section class="w-full">
         <header id="header"></header>
         <main id="main"></main>
-        <div id="page-navigation"></div>
+        <nav id="page-navigation" class="fixed bottom-0"></nav> 
       </section>
     `;
   }

@@ -22,25 +22,23 @@ export default class PageNavigation extends Component {
     const { path } = useRouter().context;
 
     return `
-      <nav class="bg-card text-text max-w-600 w-600 fixed bottom-0">
-        <ul class="flex">
-          ${wrap(pages).map(({ href, component, name }) => {
-            const liCn = cn({
-              'border-accent': href === path,
-              'border-transparent': href !== path,
-            });
+      <ul class="flex bg-card text-text max-w-600 w-600">
+        ${wrap(pages).map(({ href, component, name }) => {
+          const liCn = cn({
+            'border-accent': href === path,
+            'border-transparent': href !== path,
+          });
 
-            return `
-                <li class="w-1-2 border-t-4 border-solid ${liCn} trs-border-color">
-                  <a route href="${href}" class="w-full h-48 flex items-center justify-center">
-                    ${component()}
-                    <span class="sr-only">${name}</span>
-                  </a>
-                </li>
-              `;
-          })}
-        </ul>
-      </nav> 
+          return `
+            <li class="w-1-2 border-t-4 border-solid ${liCn} trs-border-color">
+              <a route href="${href}" class="w-full h-48 flex items-center justify-center">
+                ${component()}
+                <span class="sr-only">${name}</span>
+              </a>
+            </li>
+          `;
+        })}
+      </ul>
     `;
   }
 }
