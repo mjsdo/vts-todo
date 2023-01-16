@@ -1,3 +1,21 @@
+$duration: 200ms;
+
 .trs-color {
-  transition: background-color 200ms, color 200ms, fill 200ms, border-color 200ms;
+  transition: background-color $duration, color $duration, fill $duration, border-color $duration;
+}
+
+.trs-bg-color {
+  transition: background-color $duration;
+}
+
+.trs-text-color {
+  transition: color $duration;
+}
+
+.trs-fill-color {
+  transition: fill $duration;
+}
+
+.trs-border-color {
+  transition: border-color $duration;
 }
