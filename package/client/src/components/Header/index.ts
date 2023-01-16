@@ -17,7 +17,7 @@ export default class Header extends Component<State> {
     const textCn = 'text-text text-s20';
 
     return `
-      <header class="px-40 h-96 flex items-center justify-between">
+      <div class="px-40 h-96 flex items-center justify-between">
          <h1 class="text-s24">VTS-TODO</h1>
          <div>
            <button type="button" class="p-4" data-theme-button>
@@ -29,7 +29,7 @@ export default class Header extends Component<State> {
              ${BarIcon(textCn)}
            </button>
          </div>
-      </header>     
+      </div>     
     `;
   }
 

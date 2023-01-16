@@ -5,7 +5,6 @@ import Router from '@core/Router';
 import { initTheme } from './theme';
 import TodoStorage from './TodoStorage';
 
-
 const $App = document.querySelector('#App') as HTMLDivElement;
 
 initTheme();
@@ -18,7 +17,7 @@ todoStorage.init().then((db) => {
       matchHandler: () => new Home($App, { db }),
     },
     {
-      path: '/activities',
+      path: '/log',
       matchHandler: () => new Home($App, { db }),
     },
   ]);
