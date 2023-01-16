@@ -22,7 +22,7 @@ export default class PageNavigation extends Component {
     const { path } = useRouter().context;
 
     return `
-      <nav>
+      <nav class="bg-card text-text max-w-600 w-600 fixed bottom-0">
         <ul class="flex">
           ${wrap(pages).map(({ href, component, name }) => {
             const liCn = cn({

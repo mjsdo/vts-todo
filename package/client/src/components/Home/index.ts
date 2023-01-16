@@ -6,9 +6,9 @@ export default class Home extends Component {
   render() {
     return `
       <section class="w-full">
-        <header id="header" class="bg-card text-text trs-color"></header>
+        <header id="header"></header>
         <main id="main"></main>
-        <div id="page-navigation" class="bg-card text-text max-w-600 w-600 fixed bottom-0 trs-color"></div>
+        <div id="page-navigation"></div>
       </section>
     `;
   }
