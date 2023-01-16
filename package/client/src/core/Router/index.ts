@@ -1,15 +1,13 @@
-import type Component from '../Component';
-
 import { navigate, getPath, compareUserPathWithRoutePath } from './util';
 
-interface RouterContext {
+export interface RouterContext {
   params: Record<string, string>;
   path: string;
 }
 
 interface RouteEntry {
   path: string;
-  matchHandler: (context?: RouterContext) => Component;
+  matchHandler: (context?: RouterContext) => void;
 }
 
 interface RouterInterface {
