@@ -47,6 +47,18 @@ body[data-theme='dark'] {
   }
 }
 
+@each $key, $value in $common {
+  .text-#{$key} {
+    color: var(--#{$key});
+  }
+  .bg-#{$key} {
+    background-color: var(--#{$key});
+  }
+  .border-#{$key} {
+    border-color: var(--#{$key});
+  }
+}
+
 @each $key, $value in $light {
   .text-#{$key} {
     color: var(--#{$key});
@@ -59,17 +71,5 @@ body[data-theme='dark'] {
   }
   .fill-#{$key} {
     fill: var(--#{$key});
-  }
-}
-
-@each $key, $value in $common {
-  .text-#{$key} {
-    color: var(--#{$key});
-  }
-  .bg-#{$key} {
-    color: var(--#{$key});
-  }
-  .border-#{$key} {
-    color: var(--#{$key});
   }
 }
