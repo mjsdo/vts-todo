@@ -21,3 +21,7 @@ export const HistoryIcon = (cn = '') => `
 export const DeleteIcon = (cn = '') => `
   <i class="${cn}" aria-hidden="true">&times;</i>
 `;
+
+export const UpdateIcon = (cn = '') => `
+  <i class="fa-regular fa-pen-to-square ${cn}" aria-hidden="true"></i>
+`;
