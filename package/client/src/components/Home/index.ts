@@ -16,7 +16,7 @@ export default class Home extends Component<unknown, Props> {
     return `
       <section class="w-full h-screen bg-background shadow-xl">
         <header id="header" class="min-w-396"></header>
-        <main id="main" class="bg-background px-24 min-w-396"></main>
+        <main id="main" class="bg-background px-24 min-w-396 relative"></main>
         <nav id="page-navigation" class="fixed bottom-0 shadow-xl min-w-396 max-w-600 w-screen"></nav> 
       </section>
     `;
