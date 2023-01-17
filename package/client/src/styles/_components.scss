@@ -6,3 +6,46 @@
   height: 28px;
   border-radius: 50%;
 }
+
+.button {
+  min-width: 100px;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  color: white;
+  font-weight: 700;
+}
+
+.button-accent {
+  background-color: var(--accent);
+
+  &:hover {
+    background-color: var(--accentHover);
+  }
+
+  &:active {
+    background-color: var(--accent);
+  }
+
+  &:disabled {
+    background-color: var(--accentDisabled);
+    color: var(--cancel)
+  }
+}
+
+.button-cancel {
+  background-color: var(--cancel);
+
+  &:hover {
+    background-color: var(--cancelHover);
+  }
+
+  &:active {
+    background-color: var(--cancel);
+  }
+
+  &:disabled {
+    background-color: var(--cancel);
+    opacity: 0.5;
+  }
+}
