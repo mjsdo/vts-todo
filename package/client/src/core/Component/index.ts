@@ -1,12 +1,15 @@
-import { $, $$, delegateEvent } from './util';
+import { $, $$, delegateEvent, uuid } from './util';
 
 interface ComponentEventListeners {
   listener: EventListener;
   eventName: keyof HTMLElementEventMap;
 }
 
-export default abstract class Component<S = unknown, P = unknown> {
-  private readonly id = crypto.randomUUID();
+export default abstract class Component<
+  S = Record<string, unknown>,
+  P = Record<string, unknown>,
+> {
+  private readonly id = uuid();
   eventListeners: ComponentEventListeners[] = [];
   $parent: HTMLElement;
   state = {} as S;
