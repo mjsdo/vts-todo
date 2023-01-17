@@ -1,0 +1,6 @@
+$pageHeaderHeight: 96px;
+$pageNavHeight: 52px;
+
+#main {
+  min-height: calc(100vh - #{$pageHeaderHeight + $pageNavHeight});
+}
