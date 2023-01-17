@@ -1,0 +1,7 @@
+@for $value from 0 through 100 {
+  @if $value % 10 == 0 {
+    .opacity-#{$value} {
+      opacity: (0.01 * $value);
+    }
+  }
+}
