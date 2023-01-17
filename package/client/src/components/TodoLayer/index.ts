@@ -105,7 +105,10 @@ export default class TodoLayer extends Component<State, Props> {
             }
           </ol>
           <div class="todo-add-button-layer">
-            <button type="button" tabindex="${TAB_INDEX.ADD_TODO_BUTTON}" data-todo-add-button>${AddIcon()}</button>
+            <button type="button" tabindex="${TAB_INDEX.ADD_TODO_BUTTON}" data-todo-add-button>
+              ${AddIcon()}
+              <span class="sr-only">Todo Item 카드 추가</span>
+            </button>
           </div>
         </section>
       </div>
