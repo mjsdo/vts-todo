@@ -25,9 +25,9 @@ export default class Home extends Component<unknown, Props> {
   appendChildComponent() {
     const { todoStorage } = this.props;
 
-    const $header = this.$('#header') as HTMLDivElement;
-    const $pageNav = this.$('#page-navigation') as HTMLDivElement;
-    const $main = this.$('#main') as HTMLDivElement;
+    const $header = this.$<HTMLElement>('#header');
+    const $pageNav = this.$<HTMLElement>('#page-navigation');
+    const $main = this.$<HTMLElement>('#main');
 
     new Header($header);
     new PageNavigation($pageNav);
