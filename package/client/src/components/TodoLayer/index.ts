@@ -1,9 +1,13 @@
 import type TodoStorage from '@storage/TodoStorage';
-import type { TodoColumn, ColumnTitle } from '@storage/type';
+import type { TodoColumn, ColumnTitle, TodoItem } from '@storage/type';
 
+import TodoCard from '@components/TodoCard';
 import Component from '@core/Component';
 import { wrap } from '@core/Component/util';
+import { zip } from '@utils/array';
 import { classnames as cn } from '@utils/dom';
+
+import './styles.scss';
 
 export interface State {
   todoColumns: TodoColumn[];
@@ -15,6 +19,7 @@ export interface Props {
 }
 
 export default class TodoLayer extends Component<State, Props> {
+  activeColumn: TodoColumn = { title: 'todo', todoList: [] };
   state: State = {
     todoColumns: [],
     activeColumnTitle: 'todo',
@@ -49,20 +54,26 @@ export default class TodoLayer extends Component<State, Props> {
   render() {
     const { todoColumns, activeColumnTitle } = this.state;
     const formatItemCount = (count: number) => (count > 99 ? '99+' : count);
+    const CenterAlignedElement = (str: string) =>
+      `<div class="text-text absolute" style="transform: translate3d(-50%, -50%, 0); top: 50%; left: 50%;">${str}</div>`;
 
     if (!todoColumns.length) {
-      return `
-         <div>로딩중...</div>
-      `;
+      return CenterAlignedElement('로딩중');
     }
 
     const activeColumn = todoColumns.find(
       ({ title }) => title === activeColumnTitle,
     );
 
+    if (!activeColumn) {
+      return CenterAlignedElement('DB를 불러오는데 실패했습니다.');
+    }
+
+    this.activeColumn = activeColumn;
+
     return `
       <div class="bg-background text-text">
-        <nav id="todo-layer-nav" class="mb-24">
+        <nav id="todo-layer-nav">
           <ol class="flex gap-30 justify-center">
             ${wrap(todoColumns).map(({ title, todoList }) => {
               const itemCount = formatItemCount(todoList.length);
@@ -82,13 +93,33 @@ export default class TodoLayer extends Component<State, Props> {
           </ol>
         </nav>
         <section id="todo-layer-main">
-          ${activeColumn && wrap(activeColumn.todoList)}
+          <ol class="flex flex-col gap-20 no-scrollbar" data-todo-list>
+            ${
+              !activeColumn.todoList.length
+                ? `<div class="self-center my-auto">관리중인 계획이 없습니다.</div>`
+                : wrap(activeColumn.todoList).map(
+                    () => `<li data-todo-item></li>`,
+                  )
+            }
+          </ol>
         </section>
       </div>
     `;
   }
 
   appendChildComponent() {
-    const $todoLayerMain = this.$('#todo-layer-main') as HTMLDivElement;
+    const $$todoItem = this.$$<HTMLLIElement>('[data-todo-item]');
+    const { activeColumn } = this;
+    const todoList = this.sortByWeight(activeColumn.todoList);
+
+    zip($$todoItem, todoList).forEach(([$todoItem, todoItem]) => {
+      new TodoCard($todoItem, { todoItem });
+    });
+  }
+
+  sortByWeight(todoList: TodoItem[]) {
+    return [...todoList].sort(
+      ({ weight: aWeight }, { weight: bWeight }) => aWeight - bWeight,
+    );
   }
 }
