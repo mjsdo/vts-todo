@@ -17,3 +17,7 @@ export const TodoListIcon = (cn = '') => `
 export const HistoryIcon = (cn = '') => `
   <i class="fa-solid fa-clock-rotate-left ${cn}" aria-hidden="true"></i>
 `;
+
+export const DeleteIcon = (cn = '') => `
+  <i class="${cn}" aria-hidden="true">&times;</i>
+`;
