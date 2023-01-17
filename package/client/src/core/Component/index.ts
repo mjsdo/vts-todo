@@ -20,6 +20,7 @@ export default abstract class Component<
     this.state = state;
     this.props = props;
     requestAnimationFrame(() => {
+      this.beforeMount();
       this.mount();
     });
   }
@@ -53,10 +54,6 @@ export default abstract class Component<
     this.appendChildComponent();
   }
 
-  /**
-   * - render에서 세부적인 행동을 정의하지 말고, 리액트처럼 마크업 구조만 반환
-   * - DOM조작은 _render 메서드에 위임
-   */
   abstract render(): string;
 
   mount(): void {
@@ -69,6 +66,8 @@ export default abstract class Component<
     this._render();
     this.setEventListeners();
   }
+
+  beforeMount() {}
 
   unmount(): void {
     this.$parent.innerHTML = '';
