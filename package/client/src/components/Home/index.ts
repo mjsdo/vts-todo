@@ -1,4 +1,4 @@
-import type TodoStorage from '@/storage/TodoStorage';
+import type TodoStorage from '@storage/TodoStorage';
 
 import Header from '@components/Header';
 import PageNavigation from '@components/PageNavigation';
