@@ -1,0 +1,60 @@
+@use 'src/styles/constants';
+
+$otherComponentsTotalHeight: constants.$appTopBarHeight +
+  constants.$pageNavLinkHeight + constants.$mainPaddingY +
+  constants.$todoColumnNavHeight + constants.$todoColumnNavMarginBottom;
+
+#todo-layer-nav {
+  margin-bottom: constants.$todoColumnNavMarginBottom;
+  height: constants.$todoColumnNavHeight;
+}
+
+#todo-layer-main {
+  & [data-todo-list] {
+    height: calc(100vh - #{$otherComponentsTotalHeight});
+    overflow-y: auto;
+  }
+
+  & .todo-add-button-layer {
+    position: fixed;
+    display: flex;
+    align-items: center;
+    bottom: constants.$pageNavLinkHeight + 10;
+    width: 100px;
+    margin-left: -16px;
+    height: 60px;
+
+    [data-todo-add-button] {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      width: 20px;
+      height: 50px;
+      background-color: var(--accent);
+      color: white;
+      border-top-right-radius: 20px;
+      border-bottom-right-radius: 20px;
+      transform: translate3d(-8px, 0, 0);
+
+      &:hover {
+        background-color: var(--accentHover);
+      }
+    }
+
+    &:hover [data-todo-add-button],
+    & [data-todo-add-button]:focus {
+      animation: detachAddButton ease-out 300ms forwards;
+    }
+  }
+}
+
+@keyframes detachAddButton {
+  100% {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    font-size: 32px;
+    transform: translate3d(0, 0, 0);
+  }
+}
+

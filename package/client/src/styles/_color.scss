@@ -1,7 +1,7 @@
 $light: (
   'background': #f5f5f7,
   'text': #010101,
-  'author': #bdbdbd,
+  'footer': #bdbdbd,
   'card': #ffffff,
   'badgeBackground': #bdbdbd,
   'accent': #0075de,
@@ -9,19 +9,23 @@ $light: (
   'accentDisabled': #86c6ff,
   'delete': #ffeeec,
   'deleteBorder': #ff4343,
+  'cancel': #ababab,
+  'cancelHover': #828282,
 );
 
 $dark: (
   'background': #4f4f61,
   'text': #ffffff,
-  'author': #656565,
+  'footer': #656565,
   'card': #2b2b3d,
   'badgeBackground': #010101,
-  'accent': #28c700,
-  'accentHover': #31f500,
-  'accentDisabled': #156800,
+  'accent': #24a900,
+  'accentHover': #3dd207,
+  'accentDisabled': #155200,
   'delete': #ff8080,
   'deleteBorder': #ff004d,
+  'cancel': #828282,
+  'cancelHover': #ababab,
 );
 
 $common: (

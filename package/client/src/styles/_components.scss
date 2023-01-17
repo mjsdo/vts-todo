@@ -6,3 +6,69 @@
   height: 28px;
   border-radius: 50%;
 }
+
+.button {
+  min-width: 100px;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  color: white;
+  font-weight: 700;
+}
+
+.button-accent {
+  background-color: var(--accent);
+
+  &:hover {
+    background-color: var(--accentHover);
+  }
+
+  &:active {
+    background-color: var(--accent);
+  }
+
+  &:disabled {
+    background-color: var(--accentDisabled);
+    color: var(--cancel);
+  }
+}
+
+.button-cancel {
+  background-color: var(--cancel);
+
+  &:hover {
+    background-color: var(--cancelHover);
+  }
+
+  &:active {
+    background-color: var(--cancel);
+  }
+
+  &:disabled {
+    background-color: var(--cancel);
+    opacity: 0.5;
+  }
+}
+
+.todo-item-title-field,
+.todo-item-body-field {
+  width: 100%;
+  background-color: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  outline: 0;
+  color: var(--text);
+
+  &:focus {
+    border-bottom-color: var(--text);
+  }
+
+  &::placeholder {
+    color: var(--text);
+    opacity: 0.3;
+  }
+}
+
+.todo-item-body-field {
+  resize: vertical;
+}

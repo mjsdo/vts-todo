@@ -6,6 +6,7 @@ import type {
   UpdateItemField,
 } from '@storage/type';
 
+import { uuid } from '@core/Component/util';
 import IDB from '@IDB/index';
 import { COLUMN_TITLE } from '@storage/type';
 
@@ -14,7 +15,7 @@ const createItemObject = (item: TodoItemField) => {
 
   return {
     ...item,
-    id: crypto.randomUUID(),
+    id: uuid(),
     createdAt: date,
     updatedAt: date,
   };

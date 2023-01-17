@@ -15,9 +15,9 @@ export default class Home extends Component<unknown, Props> {
   render() {
     return `
       <section class="w-full h-screen bg-background shadow-xl">
-        <header id="header"></header>
-        <main id="main" class="bg-background py-14 px-24"></main>
-        <nav id="page-navigation" class="fixed bottom-0 shadow-xl"></nav> 
+        <header id="header" class="min-w-396"></header>
+        <main id="main" class="bg-background px-24 min-w-396 relative"></main>
+        <nav id="page-navigation" class="fixed bottom-0 shadow-xl min-w-396 max-w-600 w-screen"></nav> 
       </section>
     `;
   }
@@ -25,9 +25,9 @@ export default class Home extends Component<unknown, Props> {
   appendChildComponent() {
     const { todoStorage } = this.props;
 
-    const $header = this.$('#header') as HTMLDivElement;
-    const $pageNav = this.$('#page-navigation') as HTMLDivElement;
-    const $main = this.$('#main') as HTMLDivElement;
+    const $header = this.$<HTMLElement>('#header');
+    const $pageNav = this.$<HTMLElement>('#page-navigation');
+    const $main = this.$<HTMLElement>('#main');
 
     new Header($header);
     new PageNavigation($pageNav);
