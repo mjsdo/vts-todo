@@ -12,11 +12,12 @@ export default abstract class Component<
   private readonly id = uuid();
   eventListeners: ComponentEventListeners[] = [];
   $parent: HTMLElement;
-  state = {} as S;
+  state: S;
   props: P;
 
-  constructor($parent: HTMLElement, props = {} as P) {
+  constructor($parent: HTMLElement, props = {} as P, state = {} as S) {
     this.$parent = $parent;
+    this.state = state;
     this.props = props;
     requestAnimationFrame(() => {
       this.mount();
@@ -31,12 +32,20 @@ export default abstract class Component<
     return $$<T>(selector, this.$parent);
   }
 
-  setState(newState: Partial<S>) {
-    this.state = {
-      ...this.state,
-      ...newState,
-    };
-    requestAnimationFrame(() => this.update());
+  setState(partialState: Partial<S>) {
+    const prevState = { ...this.state } as Record<string, unknown>;
+
+    const isChanged = Object.entries(partialState).some(
+      ([k, v]) => prevState[k] !== v,
+    );
+
+    if (isChanged) {
+      this.state = {
+        ...this.state,
+        ...partialState,
+      };
+      requestAnimationFrame(() => this.update());
+    }
   }
 
   private _render(): void {
