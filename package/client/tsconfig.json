@@ -4,11 +4,13 @@
     "baseUrl": ".",
     "outDir": "./build",
     "paths": {
+      "@/*": ["src/*"],
       "@components/*": ["src/components/*"],
       "@core/*": ["src/core/*"],
       "@styles/*": ["src/styles/*"],
       "@utils/*": ["src/utils/*"],
-      "@IDB/*": ["src/IDB/*"]
+      "@IDB/*": ["src/IDB/*"],
+      "@storage/*": ["src/storage/*"]
     }
   }
 }

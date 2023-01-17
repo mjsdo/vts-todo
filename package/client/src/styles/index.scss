@@ -3,6 +3,7 @@
 @import 'color';
 @import 'flex';
 @import 'grid';
+@import 'opacity';
 @import 'transition';
 @import 'padding-margin';
 @import 'position';
@@ -10,6 +11,7 @@
 @import 'shadow';
 @import 'text';
 @import 'width-height';
+@import 'components';
 
 * {
   font-family: 'Noto Sans KR', 'sans-serif';
@@ -19,4 +21,12 @@
 #App {
   max-width: 600px;
   margin: 0 auto;
+}
+
+.font-sans {
+  font-family: 'Noto Sans KR', 'sans-serif';
+}
+
+.uppercase {
+  text-transform: uppercase;
 }

@@ -4,10 +4,10 @@ import type {
   TodoColumn,
   TodoItem,
   UpdateItemField,
-} from '@IDB/type';
+} from '@storage/type';
 
 import IDB from '@IDB/index';
-import { COLUMN_TITLE } from '@IDB/type';
+import { COLUMN_TITLE } from '@storage/type';
 
 const createItemObject = (item: TodoItemField) => {
   const date = new Date();

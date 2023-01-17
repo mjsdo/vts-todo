@@ -3,19 +3,24 @@ type Theme = 'light' | 'dark';
 const localStorageThemeKey = 'theme';
 const bodyDataThemeAttr = 'data-theme';
 
+const loadTheme = () => localStorage.getItem(localStorageThemeKey) as Theme;
+const saveTheme = (theme: Theme) =>
+  localStorage.setItem(localStorageThemeKey, theme);
+
 export const initTheme = () => {
   const currentTheme: Theme =
-    localStorage.getItem(localStorageThemeKey) ||
-    window.matchMedia('(prefers-color-scheme: dark)').matches
+    loadTheme() ||
+    (window.matchMedia('(prefers-color-scheme: dark)').matches
       ? 'dark'
-      : 'light';
+      : 'light');
 
   document.body.setAttribute(bodyDataThemeAttr, currentTheme);
-  localStorage.setItem(localStorageThemeKey, currentTheme);
+  saveTheme(currentTheme);
 };
 
 export const setBodyThemeAttr = (theme: Theme) => {
   document.body.setAttribute(bodyDataThemeAttr, theme);
+  saveTheme(theme);
 };
 
 export const getBodyThemeAttr = () => {

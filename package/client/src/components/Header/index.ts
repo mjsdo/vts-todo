@@ -17,16 +17,18 @@ export default class Header extends Component<State> {
     const textCn = 'text-text text-s20';
 
     return `
-      <div class="px-40 h-96 flex items-center justify-between">
-         <h1 class="text-s24">VTS-TODO</h1>
+      <div class="px-40 h-96 bg-card text-text flex items-center justify-between">
+         <h1 class="text-s24 font-sans">VTS-TODO</h1>
          <div>
            <button type="button" class="p-4" data-theme-button>
              ${
                theme === 'dark' ? DarkThemeIcon(textCn) : LightThemeIcon(textCn)
              }
+             <span class="sr-only">테마 변경</span>
            </button>
            <button type="button" class="p-4">
              ${BarIcon(textCn)}
+             <span class="sr-only">애플리케이션 메뉴</span>
            </button>
          </div>
       </div>     
