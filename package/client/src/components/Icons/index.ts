@@ -25,3 +25,7 @@ export const DeleteIcon = (cn = '') => `
 export const UpdateIcon = (cn = '') => `
   <i class="fa-regular fa-pen-to-square ${cn}" aria-hidden="true"></i>
 `;
+
+export const AddIcon = (cn = '') => `
+  <i class="fa-solid fa-plus ${cn}" aria-hidden="true"></i>
+`;

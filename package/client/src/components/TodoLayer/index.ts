@@ -1,7 +1,9 @@
 import type TodoStorage from '@storage/TodoStorage';
 import type { TodoColumn, ColumnTitle, TodoItem } from '@storage/type';
 
+import {AddIcon} from "@components/Icons";
 import TodoCard from '@components/TodoCard';
+import {TAB_INDEX} from "@constants/css";
 import Component from '@core/Component';
 import { wrap } from '@core/Component/util';
 import { zip } from '@utils/array';
@@ -83,7 +85,7 @@ export default class TodoLayer extends Component<State, Props> {
 
               return `
                 <li class="${itemOpacityCn}" data-column-title="${title}">
-                  <button type="button" class="flex items-center gap-6 text-s20 text-text">
+                  <button type="button" class="flex items-center gap-6 text-s20 text-text" tabindex="${TAB_INDEX.COLUMN_NAVIGATION}">
                     <strong class="uppercase">${title}</strong>
                     <span class="badge bg-badgeBackground text-s14">${itemCount}</span>
                   </button>
@@ -102,6 +104,9 @@ export default class TodoLayer extends Component<State, Props> {
                   )
             }
           </ol>
+          <div class="todo-add-button-layer">
+            <button type="button" tabindex="${TAB_INDEX.ADD_TODO_BUTTON}" data-todo-add-button>${AddIcon()}</button>
+          </div>
         </section>
       </div>
     `;
