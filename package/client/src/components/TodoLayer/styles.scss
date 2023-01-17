@@ -1,0 +1,17 @@
+@use 'src/styles/constants';
+
+$otherComponentsTotalHeight: constants.$appTopBarHeight +
+  constants.$pageNavLinkHeight + constants.$mainPaddingY +
+  constants.$todoColumnNavHeight + constants.$todoColumnNavMarginBottom;
+
+#todo-layer-nav {
+  margin-bottom: constants.$todoColumnNavMarginBottom;
+  height: constants.$todoColumnNavHeight;
+}
+
+#todo-layer-main {
+  & [data-todo-list] {
+    height: calc(100vh - #{$otherComponentsTotalHeight});
+    overflow-y: auto;
+  }
+}

@@ -1,6 +1,9 @@
-$pageHeaderHeight: 96px;
-$pageNavHeight: 52px;
+@use 'sass:math';
+@use 'src/styles/constants';
 
 #main {
-  min-height: calc(100vh - #{$pageHeaderHeight + $pageNavHeight});
+  min-height: calc(
+    100vh - #{constants.$appTopBarHeight + constants.$pageNavLinkHeight}
+  );
+  padding-top: math.div(constants.$mainPaddingY, 2);
 }
