@@ -7,15 +7,25 @@ import { pick, shallowEqual, throttle } from '@utils/dom';
 
 import './styles.scss';
 
+export type TodoItemInputValues = Pick<TodoItem, 'title' | 'body'>;
+
 export interface Props {
   todoItem: TodoItem;
+  handleAddTodo?: (todoItem: TodoItemInputValues) => void;
 }
 
 export interface State {
   mode: 'create' | 'edit' | 'read';
 }
 
+const MAX_TITLE_LENGTH = 60;
+const MAX_BODY_LENGTH = 600;
+
 export default class TodoCard extends Component<State, Props> {
+  beforeMount() {
+    this.state.mode = this.state.mode ?? 'read';
+  }
+
   effect() {
     const { mode } = this.state;
 
@@ -29,13 +39,34 @@ export default class TodoCard extends Component<State, Props> {
 
       /* handleClickFormCancelButton */
       this.on('click', '.todo-form-cancel-button', () => {
+        if (mode === 'create') {
+          this.unmount();
+          return;
+        }
+
         this.setState({ mode: 'read' });
       });
 
       /* handleClickFormSubmitButton */
       this.on('click', '.todo-form-submit-button', () => {
+        const inputValues = {
+          title: (this.$('.todo-item-title-field') as HTMLInputElement).value,
+          body: (this.$('.todo-item-body-field') as HTMLTextAreaElement).value,
+        };
+
+        if (this.isShallowEqualTo(inputValues)) {
+          alert(`이전 값과 동일하여 양식 제출에 실패했습니다.`);
+        }
+
+        if (!this.validateInputLength(inputValues)) {
+          alert(
+            `제목은 ${MAX_TITLE_LENGTH}자 이하, 본문은 ${MAX_BODY_LENGTH}이하만 가능합니다.`,
+          );
+          return;
+        }
+
         if (mode === 'create') {
-          console.log('생성');
+          this.props.handleAddTodo?.(inputValues);
           return;
         }
 
@@ -52,14 +83,14 @@ export default class TodoCard extends Component<State, Props> {
           const $submitButton = this.$<HTMLButtonElement>(
             '.todo-form-submit-button',
           );
-          const fields = pick(this.props.todoItem, ['title', 'body']); // 초깃값
+
           const inputValues = {
             title: (this.$('.todo-item-title-field') as HTMLInputElement).value,
             body: (this.$('.todo-item-body-field') as HTMLTextAreaElement)
               .value,
           };
 
-          $submitButton.disabled = shallowEqual(fields, inputValues);
+          $submitButton.disabled = this.isShallowEqualTo(inputValues);
         }, 50),
       );
     }
@@ -83,7 +114,7 @@ export default class TodoCard extends Component<State, Props> {
             placeholder="제목을 입력하세요" 
             class="todo-item-field todo-item-title-field" 
             type="text" 
-            maxlength="40"
+            maxlength="${MAX_TITLE_LENGTH}"
             value="${title}"
           />
         </header>
@@ -92,6 +123,7 @@ export default class TodoCard extends Component<State, Props> {
             placeholder="본문을 입력하세요" 
             class="todo-item-field todo-item-body-field" 
             rows="5"
+            maxlength="${MAX_BODY_LENGTH}"
           >${body}</textarea>
         </div>
         <div class="flex gap-10 pt-8">
@@ -118,6 +150,18 @@ export default class TodoCard extends Component<State, Props> {
         </div>`
         }
       </div>`;
+  }
+
+  isShallowEqualTo(inputValues: TodoItemInputValues) {
+    const fields = pick(this.props.todoItem, ['title', 'body']); // 초깃값
+
+    return shallowEqual(fields, inputValues);
+  }
+
+  validateInputLength(inputValues: TodoItemInputValues) {
+    const { title, body } = inputValues;
+
+    return title.length <= MAX_TITLE_LENGTH && body.length <= MAX_BODY_LENGTH;
   }
 }
 
