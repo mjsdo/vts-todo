@@ -1,16 +1,16 @@
 @use 'src/styles/constants';
 
-$otherComponentsTotalHeight: constants.$appTopBarHeight +
-  constants.$pageNavLinkHeight + constants.$mainPaddingY +
-  constants.$todoColumnNavHeight + constants.$todoColumnNavMarginBottom;
+$otherComponentsTotalHeight: constants.$topBarHeight + constants.$gnbHeight +
+  constants.$mainPaddingY + constants.$todoColumnNavHeight +
+  constants.$todoColumnNavMarginBottom;
 
-#todo-layer-nav {
+.todo-column-tabs {
   margin-bottom: constants.$todoColumnNavMarginBottom;
   height: constants.$todoColumnNavHeight;
 }
 
-#todo-layer-main {
-  & [data-todo-list] {
+.todo-list-layer {
+  & .todo-list {
     height: calc(100vh - #{$otherComponentsTotalHeight});
     overflow-y: auto;
   }
@@ -19,12 +19,12 @@ $otherComponentsTotalHeight: constants.$appTopBarHeight +
     position: fixed;
     display: flex;
     align-items: center;
-    bottom: constants.$pageNavLinkHeight + 10;
+    bottom: constants.$gnbHeight + 10;
     width: 100px;
     margin-left: -16px;
     height: 60px;
 
-    [data-todo-add-button] {
+    .todo-add-button {
       display: inline-flex;
       justify-content: center;
       align-items: center;
@@ -41,8 +41,8 @@ $otherComponentsTotalHeight: constants.$appTopBarHeight +
       }
     }
 
-    &:hover [data-todo-add-button],
-    & [data-todo-add-button]:focus {
+    &:hover .todo-add-button,
+    & .todo-add-button:focus {
       animation: detachAddButton ease-out 300ms forwards;
     }
   }
@@ -57,4 +57,3 @@ $otherComponentsTotalHeight: constants.$appTopBarHeight +
     transform: translate3d(0, 0, 0);
   }
 }
-

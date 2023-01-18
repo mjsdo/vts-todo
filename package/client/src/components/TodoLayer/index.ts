@@ -1,9 +1,9 @@
 import type TodoStorage from '@storage/TodoStorage';
 import type { TodoColumn, ColumnTitle, TodoItem } from '@storage/type';
 
-import {AddIcon} from "@components/Icons";
+import { AddIcon } from '@components/Icons';
 import TodoCard from '@components/TodoCard';
-import {TAB_INDEX} from "@constants/css";
+import { TAB_INDEX } from '@constants/css';
 import Component from '@core/Component';
 import { wrap } from '@core/Component/util';
 import { zip } from '@utils/array';
@@ -75,7 +75,7 @@ export default class TodoLayer extends Component<State, Props> {
 
     return `
       <div class="bg-background text-text">
-        <nav id="todo-layer-nav">
+        <nav class="todo-column-tabs">
           <ol class="flex gap-30 justify-center">
             ${wrap(todoColumns).map(({ title, todoList }) => {
               const itemCount = formatItemCount(todoList.length);
@@ -94,18 +94,20 @@ export default class TodoLayer extends Component<State, Props> {
             })}
           </ol>
         </nav>
-        <section id="todo-layer-main">
-          <ol class="flex flex-col gap-20 no-scrollbar" data-todo-list>
+        <section class="todo-list-layer">
+          <ol class="todo-list flex flex-col gap-20 no-scrollbar">
             ${
               !activeColumn.todoList.length
                 ? `<div class="self-center my-auto">관리중인 계획이 없습니다.</div>`
                 : wrap(activeColumn.todoList).map(
-                    () => `<li data-todo-item></li>`,
+                    () => `<li class="todo-item"></li>`,
                   )
             }
           </ol>
           <div class="todo-add-button-layer">
-            <button type="button" tabindex="${TAB_INDEX.ADD_TODO_BUTTON}" data-todo-add-button>
+            <button type="button" class="todo-add-button" tabindex="${
+              TAB_INDEX.ADD_TODO_BUTTON
+            }" >
               ${AddIcon()}
               <span class="sr-only">Todo Item 카드 추가</span>
             </button>
@@ -116,7 +118,7 @@ export default class TodoLayer extends Component<State, Props> {
   }
 
   appendChildComponent() {
-    const $$todoItem = this.$$<HTMLLIElement>('[data-todo-item]');
+    const $$todoItem = this.$$<HTMLLIElement>('.todo-item');
     const { activeColumn } = this;
     const todoList = this.sortByWeight(activeColumn.todoList);
 

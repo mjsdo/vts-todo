@@ -19,7 +19,7 @@ const pages = [
   },
 ];
 
-export default class PageNavigation extends Component {
+export default class Gnb extends Component {
   render() {
     const { path } = useRouter().context;
 
@@ -33,7 +33,7 @@ export default class PageNavigation extends Component {
 
           return `
             <li class="w-1-2 border-t-4 border-solid ${liCn} trs-border-color">
-              <a route href="${href}" class="w-full flex items-center justify-center" data-page-nav-link>
+              <a route href="${href}" class="gnb-item w-full flex items-center justify-center">
                 ${component()}
                 <span class="sr-only">${name}</span>
               </a>

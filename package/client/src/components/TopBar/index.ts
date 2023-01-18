@@ -10,7 +10,7 @@ interface State {
   theme: 'dark' | 'light';
 }
 
-export default class Header extends Component<State> {
+export default class TopBar extends Component<State> {
   state = {
     theme: getBodyThemeAttr(),
   };
@@ -20,12 +20,12 @@ export default class Header extends Component<State> {
     const textCn = 'text-text text-s20';
 
     return `
-      <div class="px-40 bg-card text-text flex items-center justify-between" data-app-topbar>
+      <div class="top-bar-layer px-40 bg-card text-text flex items-center justify-between">
          <h1 class="text-s24 font-sans">VTS-TODO</h1>
          <div>
-           <button type="button" class="p-4" tabindex="${
+           <button type="button" class="theme-button p-4" tabindex="${
              TAB_INDEX.TOP_BAR
-           }" data-theme-button>
+           }" >
              ${
                theme === 'dark' ? DarkThemeIcon(textCn) : LightThemeIcon(textCn)
              }
@@ -42,7 +42,7 @@ export default class Header extends Component<State> {
 
   setEventListeners() {
     /* handleClickThemeButton */
-    this.on('click', '[data-theme-button]', () => {
+    this.on('click', '.theme-button', () => {
       const nextTheme = this.state.theme === 'dark' ? 'light' : 'dark';
 
       this.setState({ theme: nextTheme }); // theme 아이콘
