@@ -30,6 +30,7 @@
   &:disabled {
     background-color: var(--accentDisabled);
     color: var(--cancel);
+    cursor: not-allowed;
   }
 }
 
