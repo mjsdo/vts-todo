@@ -20,6 +20,15 @@ export interface Props {
   todoStorage: TodoStorage;
 }
 
+const initialTodoAddItem = {
+  id: '',
+  body: '',
+  title: '',
+  weight: 0,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+};
+
 export default class TodoLayer extends Component<State, Props> {
   activeColumn: TodoColumn = { title: 'todo', todoList: [] };
   state: State = {
@@ -50,6 +59,22 @@ export default class TodoLayer extends Component<State, Props> {
       this.setState({
         activeColumnTitle: clickedColumnTitle,
       });
+    });
+
+    /* handleClickAddTodoButton */
+    this.on('click', '.todo-add-button', (e) => {
+      const $todoAddForm = this.$<HTMLDivElement>('.todo-add-form');
+
+      if (!$todoAddForm.childElementCount && e.target) {
+        new TodoCard(
+          $todoAddForm,
+          {
+            todoItem: initialTodoAddItem,
+            handleAddTodo: this.handleAddTodo.bind(this),
+          },
+          { mode: 'create' },
+        );
+      }
     });
   }
 
