@@ -17,7 +17,10 @@ export const classnames = (
     .join(' ');
 };
 
-export const throttle = <P extends unknown[]>(fn: (...args: P) => void, timeout: number) => {
+export const throttle = <P extends unknown[]>(
+  fn: (...args: P) => void,
+  timeout: number,
+) => {
   let timer: NodeJS.Timer | null = null;
 
   return (...args: Parameters<typeof fn>) => {
@@ -29,3 +32,17 @@ export const throttle = <P extends unknown[]>(fn: (...args: P) => void, timeout:
     }, timeout);
   };
 };
+
+export const pick = <T, K extends keyof T>(object: T, keys: K[]) =>
+  keys.reduce((acc, cur) => {
+    acc[cur] = object[cur];
+    return acc;
+  }, {} as Pick<T, K>);
+
+/**
+ * depth1 까지만 비교한다.
+ */
+export const shallowEqual = <Obj extends Record<string, unknown>>(
+  a: Obj,
+  b: Obj,
+) => Object.entries(a).every(([k, v]) => v === b[k]);
