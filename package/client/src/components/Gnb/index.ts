@@ -4,7 +4,7 @@ import { wrap } from '@core/Component/util';
 import { useRouter } from '@core/Router';
 import { classnames as cn } from '@utils/dom';
 
-import './index.scss';
+import './styles.scss';
 
 const pages = [
   {
