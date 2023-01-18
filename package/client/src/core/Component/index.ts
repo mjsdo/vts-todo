@@ -1,8 +1,8 @@
 import { $, $$, delegateEvent, uuid } from './util';
 
-interface ComponentEventListeners {
-  listener: EventListener;
+interface ComponentEventListener {
   eventName: keyof HTMLElementEventMap;
+  listener: (...args: any[]) => void;
 }
 
 export default abstract class Component<
@@ -10,7 +10,7 @@ export default abstract class Component<
   P = Record<string, unknown>,
 > {
   private readonly id = uuid();
-  eventListeners: ComponentEventListeners[] = [];
+  eventListeners: ComponentEventListener[] = [];
   $parent: HTMLElement;
   state: S;
   props: P;
@@ -78,10 +78,10 @@ export default abstract class Component<
 
   appendChildComponent() {}
 
-  on(
-    eventName: keyof HTMLElementEventMap,
+  on<E extends keyof HTMLElementEventMap>(
+    eventName: E,
     selector: string,
-    eventListener: EventListener,
+    eventListener: (e: HTMLElementEventMap[E]) => void,
   ) {
     this.eventListeners.push(
       delegateEvent(this.$parent, eventName, selector, eventListener),

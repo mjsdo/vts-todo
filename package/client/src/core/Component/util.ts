@@ -56,7 +56,7 @@ export const delegateEvent: DelegateEvent = (
   handler,
 ) => {
   const _handler: typeof handler = (e) => {
-    if (e.target instanceof Element && e.target.closest(selector)) {
+    if (e.target instanceof HTMLElement && e.target.closest(selector)) {
       handler(e);
     }
   };
@@ -70,7 +70,7 @@ export const delegateEvent: DelegateEvent = (
   return {
     eventName,
     listener: _handler,
-  };
+  } as const;
 };
 
 /**
