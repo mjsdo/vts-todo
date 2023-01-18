@@ -58,13 +58,14 @@ export default abstract class Component<
 
   mount(): void {
     this._render();
-    this.setEventListeners();
+    this.effect();
   }
 
   update(): void {
     this.removeEventListeners();
+    this.cleanup();
     this._render();
-    this.setEventListeners();
+    this.effect();
   }
 
   beforeMount() {}
@@ -72,6 +73,7 @@ export default abstract class Component<
   unmount(): void {
     this.$parent.innerHTML = '';
     this.removeEventListeners();
+    this.cleanup();
   }
 
   appendChildComponent() {}
@@ -86,8 +88,16 @@ export default abstract class Component<
     );
   }
 
-  setEventListeners() {}
-  removeEventListeners() {
+  /**
+   * 이벤트 정의, 렌더링 이후의 DOM 조작
+   */
+  effect() {}
+  cleanup() {}
+
+  /**
+   * this.on 으로 등록한 이벤트들은 이 메서드에서 전부 삭제된다
+   */
+  private removeEventListeners() {
     this.eventListeners.forEach(({ eventName, listener }) => {
       this.$parent.removeEventListener(eventName, listener);
     });
