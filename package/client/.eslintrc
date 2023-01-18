@@ -4,15 +4,8 @@
     "es2021": true
   },
   "parser": "@typescript-eslint/parser",
-  "plugins": [
-    "@typescript-eslint",
-    "eslint-plugin-import"
-  ],
-  "extends": [
-    "naver",
-    "plugin:@typescript-eslint/recommended",
-    "prettier"
-  ],
+  "plugins": ["@typescript-eslint", "eslint-plugin-import"],
+  "extends": ["naver", "plugin:@typescript-eslint/recommended", "prettier"],
   "rules": {
     "import/order": [
       "error",
@@ -22,11 +15,7 @@
           "builtin",
           "external",
           "internal",
-          [
-            "sibling",
-            "parent",
-            "index"
-          ],
+          ["sibling", "parent", "index"],
           "unknown"
         ],
         "newlines-between": "always",
@@ -42,6 +31,8 @@
     "@typescript-eslint/no-empty-interface": "off",
     "class-methods-use-this": "off",
     "no-new": "off",
-    "no-use-before-define": "off"
+    "no-use-before-define": "off",
+    "no-alert": "off",
+    "no-console": "off"
   }
 }
