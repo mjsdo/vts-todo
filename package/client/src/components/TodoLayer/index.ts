@@ -27,7 +27,7 @@ export default class TodoLayer extends Component<State, Props> {
     activeColumnTitle: 'todo',
   };
 
-  setEventListeners() {
+  effect() {
     const { todoColumns } = this.state;
     const { todoStorage } = this.props;
 

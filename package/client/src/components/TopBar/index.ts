@@ -40,7 +40,7 @@ export default class TopBar extends Component<State> {
     `;
   }
 
-  setEventListeners() {
+  effect() {
     /* handleClickThemeButton */
     this.on('click', '.theme-button', () => {
       const nextTheme = this.state.theme === 'dark' ? 'light' : 'dark';
