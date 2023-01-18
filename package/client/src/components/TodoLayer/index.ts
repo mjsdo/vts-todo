@@ -121,6 +121,7 @@ export default class TodoLayer extends Component<State, Props> {
         </nav>
         <section class="todo-list-layer">
           <ol class="todo-list flex flex-col gap-20 no-scrollbar">
+            <div class="todo-add-form"></div>
             ${
               !activeColumn.todoList.length
                 ? `<div class="self-center my-auto">관리중인 계획이 없습니다.</div>`
@@ -156,5 +157,38 @@ export default class TodoLayer extends Component<State, Props> {
     return [...todoList].sort(
       ({ weight: aWeight }, { weight: bWeight }) => aWeight - bWeight,
     );
+  }
+
+  async handleAddTodo(addTodoFields: Pick<TodoItem, 'title' | 'body'>) {
+    const { todoStorage } = this.props;
+    const prevState = this.state;
+    const newState = { ...prevState };
+    const columnTitle = prevState.activeColumnTitle;
+    const minWeight = newState.todoColumns
+      .find(({ title }) => title === columnTitle)
+      ?.todoList.reduce(
+        (acc, { weight }) => Math.min(acc, weight),
+        Infinity,
+      ) as number;
+    const addTodoFieldsWithWeight = { ...addTodoFields, weight: minWeight - 1 };
+
+    todoStorage
+      .addTodoItem(columnTitle, addTodoFieldsWithWeight)
+      .then((newTodoItem) => {
+        newState.todoColumns = newState.todoColumns.map((column) => {
+          const { title, todoList } = column;
+
+          if (title !== columnTitle) return column;
+
+          return { ...column, todoList: [newTodoItem, ...todoList] };
+        });
+        this.setState(newState);
+      })
+      .catch((error) => {
+        if (error instanceof Error) {
+          console.error(error.message);
+          alert(`데이터 추가에 실패했습니다. 잠시 후 다시 시도해주세요.`);
+        }
+      });
   }
 }
