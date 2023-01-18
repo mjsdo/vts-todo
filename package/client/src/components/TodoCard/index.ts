@@ -2,7 +2,7 @@ import type { TodoItem } from '@storage/type';
 
 import { DeleteIcon, EditIcon } from '@components/Icons';
 import Component from '@core/Component';
-import { formatDateToKRLocale } from '@utils/date';
+import { formatDateToKRLocaleString } from '@utils/date';
 import { pick, shallowEqual, throttle } from '@utils/dom';
 
 import './styles.scss';
@@ -106,7 +106,7 @@ export default class TodoCard extends Component<State, Props> {
           <p>${body}</p>
         </div>
         <div class="text-s12 text-footer">
-          <time>${formatDateToKRLocale(createdAt)}</time>
+          <time>${formatDateToKRLocaleString(createdAt)}</time>
         </div>
         <div class="flex absolute right-12 top-8">
           ${CardIconButton(() => EditIcon(), 'todo-edit-button', '수정하기')}
