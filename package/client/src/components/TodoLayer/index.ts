@@ -147,9 +147,10 @@ export default class TodoLayer extends Component<State, Props> {
     const $$todoItem = this.$$<HTMLLIElement>('.todo-item');
     const { activeColumn } = this;
     const todoList = this.sortByWeight(activeColumn.todoList);
+    const handleEditTodo = this.handleEditTodo.bind(this);
 
     zip($$todoItem, todoList).forEach(([$todoItem, todoItem]) => {
-      new TodoCard($todoItem, { todoItem });
+      new TodoCard($todoItem, { todoItem, handleEditTodo });
     });
   }
 
@@ -159,21 +160,20 @@ export default class TodoLayer extends Component<State, Props> {
     );
   }
 
-  async handleAddTodo(addTodoFields: Pick<TodoItem, 'title' | 'body'>) {
+  async handleAddTodo(inputs: Pick<TodoItem, 'title' | 'body'>) {
     const { todoStorage } = this.props;
-    const prevState = this.state;
-    const newState = { ...prevState };
-    const columnTitle = prevState.activeColumnTitle;
+    const newState = { ...this.state };
+    const columnTitle = newState.activeColumnTitle;
     const minWeight = newState.todoColumns
       .find(({ title }) => title === columnTitle)
       ?.todoList.reduce(
         (acc, { weight }) => Math.min(acc, weight),
         Infinity,
       ) as number;
-    const addTodoFieldsWithWeight = { ...addTodoFields, weight: minWeight - 1 };
+    const userInputsWithWeight = { ...inputs, weight: minWeight - 1 };
 
     todoStorage
-      .addTodoItem(columnTitle, addTodoFieldsWithWeight)
+      .addTodoItem(columnTitle, userInputsWithWeight)
       .then((newTodoItem) => {
         newState.todoColumns = newState.todoColumns.map((column) => {
           const { title, todoList } = column;
@@ -185,10 +185,41 @@ export default class TodoLayer extends Component<State, Props> {
         this.setState(newState);
       })
       .catch((error) => {
-        if (error instanceof Error) {
-          console.error(error.message);
-          alert(`데이터 추가에 실패했습니다. 잠시 후 다시 시도해주세요.`);
-        }
+        this.errorHandler(error, '데이터 추가에 실패했습니다.');
       });
+  }
+
+  async handleEditTodo(inputs: TodoItem) {
+    const { todoStorage } = this.props;
+    const newState = { ...this.state };
+    const columnTitle = newState.activeColumnTitle;
+
+    todoStorage
+      .updateTodoItem(columnTitle, inputs)
+      .then((editedItem) => {
+        newState.todoColumns = newState.todoColumns.map((column) => {
+          const { title, todoList } = column;
+
+          if (title !== columnTitle) return column;
+
+          return {
+            ...column,
+            todoList: todoList.map((todoItem) =>
+              todoItem.id !== editedItem.id ? todoItem : editedItem,
+            ),
+          };
+        });
+        this.setState(newState);
+      })
+      .catch((error) => {
+        this.errorHandler(error, '데이터 수정에 실패했습니다.');
+      });
+  }
+
+  errorHandler(error: unknown, alertMessage = '') {
+    if (error instanceof Error) {
+      console.error(error.message);
+      alertMessage && alert(alertMessage);
+    }
   }
 }
