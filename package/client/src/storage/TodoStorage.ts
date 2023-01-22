@@ -24,7 +24,7 @@ const createItemObject = (item: TodoItemField) => {
 const createUpdateItemObject = (item: UpdateItemField) => {
   const date = new Date();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { createdAt: deleted, ...withoutCreatedAt } = item;
+  const { createdAt: deleted, ...withoutCreatedAt } = item; // createdAt은 처음 값을 유지해야 하니 제거
 
   return {
     ...withoutCreatedAt,
