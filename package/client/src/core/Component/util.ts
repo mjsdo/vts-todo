@@ -40,10 +40,7 @@ export type DelegateEvent = <
   eventName: E,
   selector: string,
   handler: (e: HTMLElementEventMap[E]) => void,
-) => {
-  eventName: E;
-  listener: typeof handler;
-};
+) => typeof handler;
 
 /**
  * - 반환: 위임한 이벤트 정보 `{ eventName: 이벤트, listener: 이벤트리스너 }`
@@ -67,10 +64,7 @@ export const delegateEvent: DelegateEvent = (
    * 핸들러를 동작시킨다.
    **/
   target.addEventListener(eventName, _handler);
-  return {
-    eventName,
-    listener: _handler,
-  } as const;
+  return _handler;
 };
 
 /**
