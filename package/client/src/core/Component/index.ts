@@ -2,7 +2,7 @@ import { $, $$, delegateEvent, uuid } from './util';
 
 interface ComponentEventListener {
   eventName: keyof HTMLElementEventMap;
-  listener: (...args: any[]) => void;
+  listener: EventListener;
 }
 
 export default abstract class Component<
@@ -83,9 +83,15 @@ export default abstract class Component<
     selector: string,
     eventListener: (e: HTMLElementEventMap[E]) => void,
   ) {
-    this.eventListeners.push(
-      delegateEvent(this.$parent, eventName, selector, eventListener),
-    );
+    this.eventListeners.push({
+      eventName,
+      listener: delegateEvent(
+        this.$parent,
+        eventName,
+        selector,
+        eventListener,
+      ) as EventListener,
+    });
   }
 
   /**

@@ -1,4 +1,4 @@
-import type { TodoItem } from '@storage/type';
+import type { ColumnTitle, TodoItem } from '@storage/type';
 
 import { DeleteIcon, EditIcon } from '@components/Icons';
 import Component from '@core/Component';
@@ -12,6 +12,7 @@ export type TodoItemInputValues = Pick<TodoItem, 'title' | 'body'>;
 export interface Props {
   todoItem: TodoItem;
   handleAddTodo?: (todoItem: TodoItemInputValues) => void;
+  handleEditTodo?: (todoItem: TodoItem) => void;
 }
 
 export interface State {
@@ -66,12 +67,22 @@ export default class TodoCard extends Component<State, Props> {
         }
 
         if (mode === 'create') {
-          this.props.handleAddTodo?.(inputValues);
+          const { handleAddTodo } = this.props;
+
+          if (!handleAddTodo) throw new Error('handleAddTodo 메서드 누락');
+          handleAddTodo(inputValues);
+
           return;
         }
 
         if (mode === 'edit') {
-          console.log('수정');
+          const { handleEditTodo, todoItem } = this.props;
+
+          if (!handleEditTodo) throw new Error('handleEditTodo 메서드 누락');
+          handleEditTodo({
+            ...todoItem,
+            ...inputValues,
+          });
         }
       });
 

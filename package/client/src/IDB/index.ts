@@ -3,6 +3,8 @@ export const MODE = {
   RW: 'readwrite',
 } as const;
 
+type MODE_VALUE = typeof MODE[keyof typeof MODE];
+
 export default class IDB {
   private db: IDBDatabase;
 
@@ -10,11 +12,11 @@ export default class IDB {
     this.db = db;
   }
 
-  getObjectStore(storeName: string, mode: 'readonly' | 'readwrite') {
+  getObjectStore(storeName: string, mode: MODE_VALUE) {
     return this.db.transaction(storeName, mode).objectStore(storeName);
   }
 
-  getObjectStores(storeNames: string[], mode: 'readonly' | 'readwrite') {
+  getObjectStores(storeNames: string[], mode: MODE_VALUE) {
     const t = this.db.transaction(storeNames, mode);
 
     return storeNames.map((storeName) => t.objectStore(storeName));
