@@ -1,4 +1,5 @@
 export { $, $$ } from '@core/Component/util';
+export type BaseNode = DocumentFragment | Document | Element | HTMLElement;
 
 export const classnames = (
   value: string | string[] | Record<string, boolean>,
@@ -46,3 +47,17 @@ export const shallowEqual = <Obj extends Record<string, unknown>>(
   a: Obj,
   b: Obj,
 ) => Object.entries(a).every(([k, v]) => v === b[k]);
+
+const keyboardFocusableSelectors = [
+  'a[href]',
+  'button',
+  'input',
+  'textarea',
+  'select',
+  'details',
+  '[tabindex]:not([tabindex="-1"])',
+];
+
+export const getKeyboardFocusableElements = (
+  base: BaseNode = document,
+) => [...base.querySelectorAll(keyboardFocusableSelectors.join(','))] as HTMLElement[];
