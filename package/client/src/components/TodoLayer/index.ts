@@ -29,6 +29,8 @@ const initialTodoAddItem = {
   updatedAt: new Date(),
 };
 
+const INITIAL_WEIGHT = 101;
+
 export default class TodoLayer extends Component<State, Props> {
   activeColumn: TodoColumn = { title: 'todo', todoList: [] };
   state: State = {
@@ -161,16 +163,24 @@ export default class TodoLayer extends Component<State, Props> {
     );
   }
 
+  getMinWeight(todoList: TodoItem[]) {
+    return todoList.reduce(
+      (acc, { weight }) => Math.min(acc, weight),
+      Infinity,
+    );
+  }
+
   async handleAddTodo(inputs: Pick<TodoItem, 'title' | 'body'>) {
     const { todoStorage } = this.props;
     const newState = { ...this.state };
     const columnTitle = newState.activeColumnTitle;
-    const minWeight = newState.todoColumns
-      .find(({ title }) => title === columnTitle)
-      ?.todoList.reduce(
-        (acc, { weight }) => Math.min(acc, weight),
-        Infinity,
-      ) as number;
+    const _todoList = newState.todoColumns.find(
+      ({ title }) => title === columnTitle,
+    )?.todoList;
+
+    const minWeight = !_todoList?.length
+      ? INITIAL_WEIGHT
+      : this.getMinWeight(_todoList);
     const userInputsWithWeight = { ...inputs, weight: minWeight - 1 };
 
     todoStorage
