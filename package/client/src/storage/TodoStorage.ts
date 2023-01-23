@@ -84,7 +84,7 @@ export default class TodoStorage {
     return db.add(columnTitle, newItem);
   }
 
-  deleteTodoItem(columnTitle: ColumnTitle, key: number) {
+  deleteTodoItem(columnTitle: ColumnTitle, key: string) {
     const db = this.getDB();
 
     return db.delete(columnTitle, key);
