@@ -1,7 +1,9 @@
-import type { ColumnTitle, TodoItem } from '@storage/type';
+import type { TodoItem } from '@storage/type';
 
+import AlertBox from '@components/AlertBox';
 import { DeleteIcon, EditIcon } from '@components/Icons';
 import Component from '@core/Component';
+import modalStore from '@stores/modalStore';
 import { formatDateToKRLocaleString } from '@utils/date';
 import { pick, shallowEqual, throttle } from '@utils/dom';
 
@@ -13,6 +15,7 @@ export interface Props {
   todoItem: TodoItem;
   handleAddTodo?: (todoItem: TodoItemInputValues) => void;
   handleEditTodo?: (todoItem: TodoItem) => void;
+  handleDeleteTodo?: (itemKey: string) => void;
 }
 
 export interface State {
@@ -105,11 +108,34 @@ export default class TodoCard extends Component<State, Props> {
         }, 50),
       );
     }
+
+    /* handleClickDeleteButton */
+    this.on('click', '.todo-delete-button', () => {
+      const { handleDeleteTodo, todoItem } = this.props;
+
+      if (!handleDeleteTodo) throw new Error('handleDeleteTodo 메서드 누락');
+
+      const handleCancel = () => modalStore.reset();
+      const handleSubmit = () => {
+        handleDeleteTodo(todoItem.id);
+        modalStore.reset();
+      };
+
+      modalStore.setState({
+        open: true,
+        content: ($parent: HTMLElement) =>
+          new AlertBox($parent, {
+            message: '정말로 삭제하시겠습니까?',
+            handleCancel,
+            handleSubmit,
+          }),
+      });
+    });
   }
 
   render() {
     const {
-      todoItem: { id, title, body, createdAt },
+      todoItem: { title, body, createdAt },
     } = this.props;
 
     const { mode } = this.state;
