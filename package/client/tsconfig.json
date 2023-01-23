@@ -11,7 +11,8 @@
       "@styles/*": ["src/styles/*"],
       "@utils/*": ["src/utils/*"],
       "@IDB/*": ["src/IDB/*"],
-      "@storage/*": ["src/storage/*"]
+      "@storage/*": ["src/storage/*"],
+      "@stores/*": ["src/stores/*"]
     }
   }
 }

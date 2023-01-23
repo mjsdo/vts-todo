@@ -148,9 +148,10 @@ export default class TodoLayer extends Component<State, Props> {
     const { activeColumn } = this;
     const todoList = this.sortByWeight(activeColumn.todoList);
     const handleEditTodo = this.handleEditTodo.bind(this);
+    const handleDeleteTodo = this.handleDeleteTodo.bind(this);
 
     zip($$todoItem, todoList).forEach(([$todoItem, todoItem]) => {
-      new TodoCard($todoItem, { todoItem, handleEditTodo });
+      new TodoCard($todoItem, { todoItem, handleEditTodo, handleDeleteTodo });
     });
   }
 
@@ -213,6 +214,31 @@ export default class TodoLayer extends Component<State, Props> {
       })
       .catch((error) => {
         this.errorHandler(error, '데이터 수정에 실패했습니다.');
+      });
+  }
+
+  async handleDeleteTodo(key: string) {
+    const { todoStorage } = this.props;
+    const newState = { ...this.state };
+    const columnTitle = newState.activeColumnTitle;
+
+    todoStorage
+      .deleteTodoItem(columnTitle, key)
+      .then((deletedItemKey) => {
+        newState.todoColumns = newState.todoColumns.map((column) => {
+          const { title, todoList } = column;
+
+          if (title !== columnTitle) return column;
+
+          return {
+            ...column,
+            todoList: todoList.filter(({ id }) => id !== deletedItemKey),
+          };
+        });
+        this.setState(newState);
+      })
+      .catch((error) => {
+        this.errorHandler(error, '데이터 삭제에 실패했습니다.');
       });
   }
 

@@ -6,8 +6,8 @@ interface ComponentEventListener {
 }
 
 export default abstract class Component<
-  S = Record<string, unknown>,
-  P = Record<string, unknown>,
+  S = Record<string, never>,
+  P = Record<string, never>,
 > {
   private readonly id = uuid();
   eventListeners: ComponentEventListener[] = [];
@@ -23,6 +23,10 @@ export default abstract class Component<
       this.beforeMount();
       this.mount();
     });
+  }
+
+  existsInDOM() {
+    return document.body.contains(this.$parent);
   }
 
   protected $<T extends Element>(selector: string) {
@@ -111,5 +115,4 @@ export default abstract class Component<
   }
 }
 
-// $parent에 위임한 이벤트는 unmount되거나 $parent가 dom에서 없어지면 사라짐
-// document나 window에 등록하는 이벤트는? --> 전용 메서드를 만들어야 할듯??
+export type ComponentInstance = InstanceType<typeof Component>;
