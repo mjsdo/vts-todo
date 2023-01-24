@@ -5,41 +5,82 @@ export interface RouterContext {
   path: string;
 }
 
-interface RouteEntry {
+export interface RouteEntry {
   path: string;
   matchHandler: (context?: RouterContext) => void;
 }
 
-interface RouterInterface {
+export interface RouterInterface {
   context: RouterContext;
   navigate: (deltaOrUrl: string | number) => void;
+}
+
+export interface RouterOptions {
+  baseUrl: string;
 }
 
 export default class Router implements RouterInterface {
   private static routerInstance: Router;
 
+  private readonly options: RouterOptions;
   private readonly $routerRoot: HTMLElement;
   private readonly table: RouteEntry[] = [];
   private readonly anchorElementRouteAttribute = 'route';
   private routerContext!: RouterContext;
 
-  constructor($routerRoot: HTMLElement, table: RouteEntry[]) {
+  constructor(
+    $routerRoot: HTMLElement,
+    table: RouteEntry[],
+    options: RouterOptions = {
+      baseUrl: '',
+    },
+  ) {
     if (Router.routerInstance) {
       throw new Error('Router 는 여러번 생성할 수 없습니다.');
     }
     Router.routerInstance = this;
     this.$routerRoot = $routerRoot;
-    this.table = table;
+    this.options = options;
+    this.table = table.map((entry) => ({
+      ...entry,
+      path: this.prependBaseUrl(entry.path),
+    }));
     this.setEvents();
     this.route();
   }
 
   get context() {
-    return this.routerContext;
+    return {
+      ...this.routerContext,
+      path: this.removeBaseUrl(this.routerContext.path),
+    };
   }
 
+  private removeBaseUrl(path: string) {
+    const { baseUrl } = this.options;
+
+    if (path.startsWith(this.options.baseUrl)) {
+      return path.substring(baseUrl.length);
+    }
+    return path;
+  }
+
+  private prependBaseUrl(path: string) {
+    const { baseUrl } = this.options;
+
+    return `/${baseUrl}/${path}`.replace(/\/+/g, '/');
+  }
+
+  /* baseURL이 자동으로 붙음 */
   navigate(deltaOrUrl: string | number) {
-    navigate(deltaOrUrl);
+    if (typeof deltaOrUrl === 'number') {
+      navigate(deltaOrUrl);
+      this.route();
+      return;
+    }
+
+    navigate(this.prependBaseUrl(deltaOrUrl));
+
     this.route();
   }
 
