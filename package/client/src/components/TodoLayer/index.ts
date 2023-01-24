@@ -4,6 +4,7 @@ import type { TodoColumn, ColumnTitle, TodoItem } from '@storage/type';
 import { AddIcon } from '@components/Icons';
 import Loader from '@components/Loader';
 import TodoCard from '@components/TodoCard';
+import DRAG_KEY from '@constants/dragKey';
 import Component from '@core/Component';
 import { wrap } from '@core/Component/util';
 import { zip } from '@utils/array';
@@ -37,12 +38,13 @@ export default class TodoLayer extends Component<State, Props> {
     todoColumns: [],
     activeColumnTitle: 'todo',
   };
+  dragHandlerSettled = true;
 
   effect() {
-    const { todoColumns } = this.state;
+    const { todoColumns: _todoColumns } = this.state;
     const { todoStorage } = this.props;
 
-    if (!todoColumns.length) {
+    if (!_todoColumns.length) {
       todoStorage.getAllTodoColumns().then((latestTodoColumns) => {
         this.setState({
           todoColumns: latestTodoColumns,
@@ -58,9 +60,7 @@ export default class TodoLayer extends Component<State, Props> {
       ) as HTMLLIElement;
       const clickedColumnTitle = $navItem.dataset.columnTitle as ColumnTitle;
 
-      this.setState({
-        activeColumnTitle: clickedColumnTitle,
-      });
+      this.setState({ activeColumnTitle: clickedColumnTitle });
     });
 
     /* handleClickAddTodoButton */
@@ -76,6 +76,45 @@ export default class TodoLayer extends Component<State, Props> {
           },
           { mode: 'create' },
         );
+      }
+    });
+
+    this.on('dragover', '[data-column-title]', (e) => {
+      e.preventDefault();
+    });
+
+    /* 다른 컬럼으로 아이템 이동 */
+    /* handleDropTodoOtherColumn */
+    this.on('drop', '[data-column-title]', async (e) => {
+      try {
+        if (!this.dragHandlerSettled) return;
+        this.dragHandlerSettled = false;
+
+        const targetItemId = e.dataTransfer?.getData(
+          DRAG_KEY.TODO_ITEM_ID,
+        ) as string;
+
+        const $columnTitle = (e.target as HTMLElement).closest(
+          '[data-column-title]',
+        ) as HTMLElement;
+
+        if (!$columnTitle || !targetItemId) return;
+        const columnTitle = $columnTitle.dataset.columnTitle as ColumnTitle;
+
+        const { activeColumnTitle } = this.state;
+
+        if (columnTitle === activeColumnTitle) return;
+
+        // (from, to, itemId)
+        await this.handleDropTodoOtherColumn(
+          activeColumnTitle,
+          columnTitle,
+          targetItemId,
+        );
+      } catch (error) {
+        console.error(error);
+      } finally {
+        this.dragHandlerSettled = true;
       }
     });
   }
@@ -162,10 +201,47 @@ export default class TodoLayer extends Component<State, Props> {
   }
 
   getMinWeight(todoList: TodoItem[]) {
-    return todoList.reduce(
+    const minWeight = todoList.reduce(
       (acc, { weight }) => Math.min(acc, weight),
       Infinity,
     );
+
+    return minWeight === Infinity ? INITIAL_WEIGHT : minWeight;
+  }
+
+  async handleDropTodoOtherColumn(
+    fromColumnTitle: ColumnTitle,
+    toColumnTitle: ColumnTitle,
+    itemId: string,
+  ) {
+    const { todoColumns } = this.state;
+    const { todoStorage } = this.props;
+
+    const targetItem = todoColumns
+      .find(({ title }) => fromColumnTitle === title)
+      ?.todoList?.find(({ id }) => itemId === id) as TodoItem;
+    const minWeight = this.getMinWeight(
+      todoColumns.find(({ title }) => toColumnTitle === title)
+        ?.todoList as TodoItem[],
+    );
+
+    todoStorage
+      .moveTodoItem(fromColumnTitle, toColumnTitle, {
+        ...targetItem,
+        weight: minWeight - 1,
+      })
+      .then(({ fromColumn, toColumn }) => {
+        this.setState({
+          todoColumns: todoColumns.map((c) => {
+            if (c.title === fromColumnTitle) return fromColumn;
+            if (c.title === toColumnTitle) return toColumn;
+            return c;
+          }),
+        });
+      })
+      .catch((error) => {
+        this.errorHandler(error, '데이터 이동에 실패했습니다.');
+      });
   }
 
   async handleAddTodo(inputs: Pick<TodoItem, 'title' | 'body'>) {
@@ -174,11 +250,9 @@ export default class TodoLayer extends Component<State, Props> {
     const columnTitle = newState.activeColumnTitle;
     const _todoList = newState.todoColumns.find(
       ({ title }) => title === columnTitle,
-    )?.todoList;
+    )?.todoList as TodoItem[];
 
-    const minWeight = !_todoList?.length
-      ? INITIAL_WEIGHT
-      : this.getMinWeight(_todoList);
+    const minWeight = this.getMinWeight(_todoList);
     const userInputsWithWeight = { ...inputs, weight: minWeight - 1 };
 
     todoStorage
