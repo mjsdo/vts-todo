@@ -17,7 +17,7 @@ todoStorage.init().then(() => {
       matchHandler: () => new Home($App, { todoStorage }),
     },
     {
-      path: '/log',
+      path: '/menu',
       matchHandler: () => new Home($App, { todoStorage }),
     },
   ]);
