@@ -1,4 +1,4 @@
-import { HistoryIcon, TodoListIcon } from '@components/Icons';
+import { BarIcon, TodoListIcon } from '@components/Icons';
 import Component from '@core/Component';
 import { wrap } from '@core/Component/util';
 import { useRouter } from '@core/Router';
@@ -8,14 +8,14 @@ import './styles.scss';
 
 const pages = [
   {
-    name: 'home',
+    name: '할 일 관리 페이지',
     href: '/',
     component: TodoListIcon,
   },
   {
-    name: 'log',
-    href: '/log',
-    component: HistoryIcon,
+    name: '메뉴 페이지',
+    href: '/menu',
+    component: BarIcon,
   },
 ];
 

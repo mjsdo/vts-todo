@@ -2,6 +2,7 @@ import type TodoStorage from '@storage/TodoStorage';
 import type { TodoColumn, ColumnTitle, TodoItem } from '@storage/type';
 
 import { AddIcon } from '@components/Icons';
+import Loader from "@components/Loader";
 import TodoCard from '@components/TodoCard';
 import { TAB_INDEX } from '@constants/css';
 import Component from '@core/Component';
@@ -87,7 +88,7 @@ export default class TodoLayer extends Component<State, Props> {
       `<div class="text-text absolute" style="transform: translate3d(-50%, -50%, 0); top: 50%; left: 50%;">${str}</div>`;
 
     if (!todoColumns.length) {
-      return CenterAlignedElement('로딩중');
+      return CenterAlignedElement(Loader());
     }
 
     const activeColumn = todoColumns.find(
