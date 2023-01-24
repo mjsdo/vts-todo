@@ -1,5 +1,6 @@
 import '@styles/index.scss';
 import Home from '@components/Home';
+import Menu from "@components/Menu";
 import Router from '@core/Router';
 import TodoStorage from '@storage/TodoStorage';
 
@@ -18,7 +19,7 @@ todoStorage.init().then(() => {
     },
     {
       path: '/menu',
-      matchHandler: () => new Home($App, { todoStorage }),
+      matchHandler: () => new Menu($App),
     },
   ]);
 });
