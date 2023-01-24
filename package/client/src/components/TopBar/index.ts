@@ -1,4 +1,4 @@
-import { BarIcon, DarkThemeIcon, LightThemeIcon } from '@components/Icons';
+import { DarkThemeIcon, LightThemeIcon } from '@components/Icons';
 import { TAB_INDEX } from '@constants/css';
 import Component from '@core/Component';
 
@@ -30,10 +30,6 @@ export default class TopBar extends Component<State> {
                theme === 'dark' ? DarkThemeIcon(textCn) : LightThemeIcon(textCn)
              }
              <span class="sr-only">테마 변경</span>
-           </button>
-           <button type="button" class="p-4" tabindex="${TAB_INDEX.TOP_BAR}">
-             ${BarIcon(textCn)}
-             <span class="sr-only">애플리케이션 메뉴</span>
            </button>
          </div>
       </div>     
