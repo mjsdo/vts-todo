@@ -8,6 +8,15 @@ export interface Props {
 
 export interface State {}
 
+/* 여러 모달이 중첩해서 열리는 경우엔 Stack으로? */
+let windowFocusHandler: (e: FocusEvent) => void;
+const renewWindowFocusHandler = (handler: typeof windowFocusHandler) => {
+  if (windowFocusHandler) {
+    window.removeEventListener('focus', windowFocusHandler);
+  }
+  window.addEventListener('focus', (windowFocusHandler = handler));
+};
+
 export default class Modal extends Component<State, Props> {
   render() {
     const { open } = modalStore.state;
@@ -32,7 +41,12 @@ export default class Modal extends Component<State, Props> {
 
     content?.($modalContent);
     /* 모달이 열리면 다음 Tab키의 시작점을 바꾸기 위해 모달 내부의 tabindex가 -1인 요소를 focus한다 */
-    this.$<HTMLElement>('.modal-content').focus();
+    $modalContent.focus();
+
+    /* viewport 바깥으로 (ex: devtools) 포커스 했다가 다시 Tab 키로 들어오는 경우 */
+    renewWindowFocusHandler(() => {
+      this.$<HTMLElement>('.modal-content')?.focus()
+    });
   }
 
   effect() {
@@ -65,7 +79,7 @@ export default class Modal extends Component<State, Props> {
     });
 
     /* handleClickDimmedLayer */
-    this.on('click', '.modal-dimmed', (e) => {
+    this.on('click', '.modal-dimmed', () => {
       modalStore.reset();
     });
   }
