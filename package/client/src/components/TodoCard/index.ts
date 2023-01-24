@@ -2,6 +2,7 @@ import type { TodoItem } from '@storage/type';
 
 import AlertBox from '@components/AlertBox';
 import { DeleteIcon, EditIcon } from '@components/Icons';
+import DRAG_KEY from '@constants/dragKey';
 import Component from '@core/Component';
 import modalStore from '@stores/modalStore';
 import { formatDateToKRLocaleString } from '@utils/date';
@@ -131,6 +132,24 @@ export default class TodoCard extends Component<State, Props> {
           }),
       });
     });
+
+    /* handleCardDragStart */
+    this.on('dragstart', '.todo-card', (e) => {
+      const $card = (e.target as HTMLElement).closest('.todo-card');
+
+      if (!$card) return;
+
+      e.dataTransfer?.setData(DRAG_KEY.TODO_ITEM_ID, this.props.todoItem.id);
+      $card.classList.add('dragging');
+    });
+
+    /* handleCardDragEnd */
+    this.on('dragend', '.todo-card', (e) => {
+      const $card = (e.target as HTMLElement).closest('.todo-card');
+
+      if (!$card) return;
+      $card.classList.remove('dragging');
+    });
   }
 
   render() {
@@ -140,9 +159,10 @@ export default class TodoCard extends Component<State, Props> {
 
     const { mode } = this.state;
     const isEditOrCreateMode = ['edit', 'create'].includes(mode);
+    const draggable = mode === 'read';
 
     return `
-      <div class="todo-card bg-card rounded-xl p-16 shadow border border-solid border-transparent relative">
+      <div class="todo-card bg-card rounded-xl p-16 shadow border border-solid border-transparent relative" draggable="${draggable}">
         ${
           isEditOrCreateMode
             ? `
