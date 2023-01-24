@@ -77,6 +77,33 @@ export default class TodoStorage {
     throw new Error('먼저 DB를 초기화 해야합니다.');
   }
 
+  async moveTodoItem(
+    fromColumn: ColumnTitle,
+    toColumn: ColumnTitle,
+    todoItem: TodoItem,
+  ) {
+    await Promise.all([
+      this.deleteTodoItem(fromColumn, todoItem.id),
+      this.prependTodoItem(toColumn, todoItem),
+    ]);
+
+    const [from, to] = await Promise.all([
+      this.getTodoColumn(fromColumn),
+      this.getTodoColumn(toColumn),
+    ]);
+
+    return {
+      fromColumn: from,
+      toColumn: to,
+    };
+  }
+
+  prependTodoItem(columnTitle: ColumnTitle, todoItem: TodoItem) {
+    const db = this.getDB();
+
+    return db.add(columnTitle, todoItem);
+  }
+
   addTodoItem(columnTitle: ColumnTitle, field: TodoItemField) {
     const db = this.getDB();
     const newItem = createItemObject(field);
