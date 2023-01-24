@@ -1,6 +1,6 @@
 import '@styles/index.scss';
 import Home from '@components/Home';
-import Menu from "@components/Menu";
+import Menu from '@components/Menu';
 import Router from '@core/Router';
 import TodoStorage from '@storage/TodoStorage';
 
