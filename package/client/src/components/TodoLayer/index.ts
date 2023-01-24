@@ -2,9 +2,8 @@ import type TodoStorage from '@storage/TodoStorage';
 import type { TodoColumn, ColumnTitle, TodoItem } from '@storage/type';
 
 import { AddIcon } from '@components/Icons';
-import Loader from "@components/Loader";
+import Loader from '@components/Loader';
 import TodoCard from '@components/TodoCard';
-import { TAB_INDEX } from '@constants/css';
 import Component from '@core/Component';
 import { wrap } from '@core/Component/util';
 import { zip } from '@utils/array';
@@ -113,7 +112,7 @@ export default class TodoLayer extends Component<State, Props> {
 
               return `
                 <li class="${itemOpacityCn}" data-column-title="${title}">
-                  <button type="button" class="flex items-center gap-6 text-s20 text-text" tabindex="${TAB_INDEX.COLUMN_NAVIGATION}">
+                  <button type="button" class="flex items-center gap-6 text-s20 text-text">
                     <strong class="uppercase">${title}</strong>
                     <span class="badge bg-badgeBackground text-s14">${itemCount}</span>
                   </button>
@@ -123,6 +122,12 @@ export default class TodoLayer extends Component<State, Props> {
           </ol>
         </nav>
         <section class="todo-list-layer">
+          <div class="todo-add-button-layer">
+            <button type="button" class="todo-add-button">
+              ${AddIcon()}
+              <span class="sr-only">Todo Item 카드 추가</span>
+            </button>
+          </div>
           <ol class="todo-list flex flex-col gap-20 no-scrollbar">
             <div class="todo-add-form"></div>
             ${
@@ -133,14 +138,6 @@ export default class TodoLayer extends Component<State, Props> {
                   )
             }
           </ol>
-          <div class="todo-add-button-layer">
-            <button type="button" class="todo-add-button" tabindex="${
-              TAB_INDEX.ADD_TODO_BUTTON
-            }" >
-              ${AddIcon()}
-              <span class="sr-only">Todo Item 카드 추가</span>
-            </button>
-          </div>
         </section>
       </div>
     `;

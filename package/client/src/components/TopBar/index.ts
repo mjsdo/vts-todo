@@ -1,5 +1,4 @@
 import { DarkThemeIcon, LightThemeIcon } from '@components/Icons';
-import { TAB_INDEX } from '@constants/css';
 import Component from '@core/Component';
 
 import { getBodyThemeAttr, setBodyThemeAttr } from '@/theme';
@@ -23,9 +22,7 @@ export default class TopBar extends Component<State> {
       <div class="top-bar-layer px-40 bg-card text-text flex items-center justify-between">
          <h1 class="text-s24 font-sans uppercase user-select-none">todo list</h1>
          <div>
-           <button type="button" class="theme-button p-4" tabindex="${
-             TAB_INDEX.TOP_BAR
-           }" >
+           <button type="button" class="theme-button p-4">
              ${
                theme === 'dark' ? DarkThemeIcon(textCn) : LightThemeIcon(textCn)
              }
