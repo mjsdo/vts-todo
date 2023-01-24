@@ -33,11 +33,11 @@ const initialTodoAddItem = {
 const INITIAL_WEIGHT = 101;
 
 export default class TodoLayer extends Component<State, Props> {
-  activeColumn: TodoColumn = { title: 'todo', todoList: [] };
   state: State = {
     todoColumns: [],
     activeColumnTitle: 'todo',
   };
+  activeColumn: TodoColumn = { title: 'todo', todoList: [] };
   dragHandlerSettled = true;
 
   effect() {
@@ -185,17 +185,24 @@ export default class TodoLayer extends Component<State, Props> {
   appendChildComponent() {
     const $$todoItem = this.$$<HTMLLIElement>('.todo-item');
     const { activeColumn } = this;
-    const todoList = this.sortByWeight(activeColumn.todoList);
+
+    this.sortByWeightMutation(activeColumn.todoList);
     const handleEditTodo = this.handleEditTodo.bind(this);
     const handleDeleteTodo = this.handleDeleteTodo.bind(this);
 
-    zip($$todoItem, todoList).forEach(([$todoItem, todoItem]) => {
+    zip($$todoItem, activeColumn.todoList).forEach(([$todoItem, todoItem]) => {
       new TodoCard($todoItem, { todoItem, handleEditTodo, handleDeleteTodo });
     });
   }
 
   sortByWeight(todoList: TodoItem[]) {
     return [...todoList].sort(
+      ({ weight: aWeight }, { weight: bWeight }) => aWeight - bWeight,
+    );
+  }
+
+  sortByWeightMutation(todoList: TodoItem[]) {
+    return todoList.sort(
       ({ weight: aWeight }, { weight: bWeight }) => aWeight - bWeight,
     );
   }
