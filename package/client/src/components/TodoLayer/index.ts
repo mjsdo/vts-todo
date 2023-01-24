@@ -38,7 +38,7 @@ export default class TodoLayer extends Component<State, Props> {
     activeColumnTitle: 'todo',
   };
   activeColumn: TodoColumn = { title: 'todo', todoList: [] };
-  dragHandlerSettled = true;
+  dropHandlerSettled = true;
 
   effect() {
     const { todoColumns: _todoColumns } = this.state;
@@ -85,11 +85,8 @@ export default class TodoLayer extends Component<State, Props> {
 
     /* 다른 컬럼으로 아이템 이동 */
     /* handleDropTodoOtherColumn */
-    this.on('drop', '[data-column-title]', async (e) => {
-      try {
-        if (!this.dragHandlerSettled) return;
-        this.dragHandlerSettled = false;
-
+    this.on('drop', '[data-column-title]', (e) => {
+      this.dropHandler(async () => {
         const targetItemId = e.dataTransfer?.getData(
           DRAG_KEY.TODO_ITEM_ID,
         ) as string;
@@ -111,11 +108,7 @@ export default class TodoLayer extends Component<State, Props> {
           columnTitle,
           targetItemId,
         );
-      } catch (error) {
-        console.error(error);
-      } finally {
-        this.dragHandlerSettled = true;
-      }
+      });
     });
   }
 
@@ -189,9 +182,15 @@ export default class TodoLayer extends Component<State, Props> {
     this.sortByWeightMutation(activeColumn.todoList);
     const handleEditTodo = this.handleEditTodo.bind(this);
     const handleDeleteTodo = this.handleDeleteTodo.bind(this);
+    const handleDropTodoSameColumn = this.handleDropTodoSameColumn.bind(this);
 
     zip($$todoItem, activeColumn.todoList).forEach(([$todoItem, todoItem]) => {
-      new TodoCard($todoItem, { todoItem, handleEditTodo, handleDeleteTodo });
+      new TodoCard($todoItem, {
+        todoItem,
+        handleEditTodo,
+        handleDeleteTodo,
+        handleDropTodoSameColumn,
+      });
     });
   }
 
@@ -214,6 +213,27 @@ export default class TodoLayer extends Component<State, Props> {
     );
 
     return minWeight === Infinity ? INITIAL_WEIGHT : minWeight;
+  }
+
+  dropHandler(fn: () => void) {
+    try {
+      if (!this.dropHandlerSettled) return;
+      this.dropHandlerSettled = false;
+
+      fn();
+    } catch (error) {
+      this.errorHandler(error);
+    } finally {
+      this.dropHandlerSettled = true;
+    }
+  }
+
+  async handleDropTodoSameColumn(
+    fromItem: TodoItem,
+    toItem: TodoItem,
+    direction: 'up' | 'down',
+  ) {
+    this.dropHandler(() => {});
   }
 
   async handleDropTodoOtherColumn(
@@ -334,7 +354,7 @@ export default class TodoLayer extends Component<State, Props> {
   errorHandler(error: unknown, alertMessage = '') {
     if (error instanceof Error) {
       console.error(error.message);
-      alertMessage && alert(alertMessage);
+      alertMessage ? alert(alertMessage) : alert(error.message);
     }
   }
 }
