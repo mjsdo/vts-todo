@@ -21,7 +21,7 @@ export default class TopBar extends Component<State> {
 
     return `
       <div class="top-bar-layer px-40 bg-card text-text flex items-center justify-between">
-         <h1 class="text-s24 font-sans">VTS-TODO</h1>
+         <h1 class="text-s24 font-sans uppercase user-select-none">todo list</h1>
          <div>
            <button type="button" class="theme-button p-4" tabindex="${
              TAB_INDEX.TOP_BAR
