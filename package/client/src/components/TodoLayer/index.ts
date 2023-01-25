@@ -39,6 +39,7 @@ export default class TodoLayer extends Component<State, Props> {
   };
   activeColumn: TodoColumn = { title: 'todo', todoList: [] };
   dropHandlerSettled = true;
+  listScrollTop = 0;
 
   effect() {
     const { todoColumns: _todoColumns } = this.state;
@@ -192,6 +193,10 @@ export default class TodoLayer extends Component<State, Props> {
         handleDropTodoSameColumn,
       });
     });
+
+    const $todoList = this.$<HTMLElement>('.todo-list');
+
+    this.loadScrollTop($todoList);
   }
 
   sortByWeight(todoList: TodoItem[]) {
@@ -219,6 +224,7 @@ export default class TodoLayer extends Component<State, Props> {
     try {
       if (!this.dropHandlerSettled) return;
       this.dropHandlerSettled = false;
+      this.saveScrollTop();
 
       fn();
     } catch (error) {
@@ -485,6 +491,21 @@ export default class TodoLayer extends Component<State, Props> {
     if (error instanceof Error) {
       console.error(error.message);
       alertMessage ? alert(alertMessage) : alert(error.message);
+    }
+  }
+
+  saveScrollTop() {
+    const $todoList = this.$<HTMLElement>('.todo-list');
+
+    this.listScrollTop = $todoList.scrollTop;
+  }
+
+  loadScrollTop($element: HTMLElement) {
+    if ($element) {
+      requestAnimationFrame(() => {
+        $element.scrollTop = this.listScrollTop;
+        this.listScrollTop = 0;
+      });
     }
   }
 }
