@@ -283,8 +283,8 @@ export default class TodoLayer extends Component<State, Props> {
       const lastItem = activeTodoList.at(-1);
       const fromItem = activeTodoList.at(fromItemIndex);
       const toItem = activeTodoList.at(toItemIndex);
-      const toItemPrev = activeTodoList.at(toItemIndex - 1);
-      const toItemNext = activeTodoList.at(toItemIndex + 1);
+      const toItemPrev = activeTodoList[toItemIndex - 1];
+      const toItemNext = activeTodoList[toItemIndex + 1];
 
       if (!firstItem || !lastItem || !fromItem || !toItem) return;
 
