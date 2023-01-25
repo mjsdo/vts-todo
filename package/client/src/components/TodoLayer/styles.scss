@@ -23,6 +23,7 @@ $otherComponentsTotalHeight: constants.$topBarHeight + constants.$gnbHeight +
     width: 100px;
     margin-left: -16px;
     height: 60px;
+    z-index: constants.$addTodoButtonZIndex;
 
     .todo-add-button {
       display: inline-flex;

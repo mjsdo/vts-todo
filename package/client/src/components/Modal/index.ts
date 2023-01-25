@@ -2,6 +2,8 @@ import Component from '@core/Component';
 import modalStore from '@stores/modalStore';
 import { getKeyboardFocusableElements } from '@utils/dom';
 
+import './styles.scss';
+
 export interface Props {
   dimmedColor?: string;
 }
@@ -45,7 +47,7 @@ export default class Modal extends Component<State, Props> {
 
     /* viewport 바깥으로 (ex: devtools) 포커스 했다가 다시 Tab 키로 들어오는 경우 */
     renewWindowFocusHandler(() => {
-      this.$<HTMLElement>('.modal-content')?.focus()
+      this.$<HTMLElement>('.modal-content')?.focus();
     });
   }
 
