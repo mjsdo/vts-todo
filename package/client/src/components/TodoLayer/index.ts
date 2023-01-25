@@ -451,6 +451,7 @@ export default class TodoLayer extends Component<State, Props> {
   }
 
   async handleEditTodo(inputs: TodoItem) {
+    this.saveScrollTop();
     const { todoStorage } = this.props;
     const newState = { ...this.state };
     const columnTitle = newState.activeColumnTitle;
