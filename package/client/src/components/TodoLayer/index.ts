@@ -228,12 +228,134 @@ export default class TodoLayer extends Component<State, Props> {
     }
   }
 
-  async handleDropTodoSameColumn(
-    fromItem: TodoItem,
-    toItem: TodoItem,
+  // 두 아이템의 중간 weight를 검증
+  validateMiddleWeight(prevItem: TodoItem, nextItem: TodoItem) {
+    const middleWeight = this.getMiddleWeight(prevItem, nextItem);
+
+    // 차이가 작아지면 중간 weight가 이전 또는 다음 weight와 같아지는 시점이 생김
+    return !(
+      middleWeight === prevItem.weight || middleWeight === nextItem.weight
+    );
+  }
+
+  getMiddleWeight(a: TodoItem, b: TodoItem) {
+    return (a.weight + b.weight) / 2;
+  }
+
+  // 현재 컬럼에서 weight이 start ~ end 사잇값인 item의 weight을 균등한 간격으로 갱신한다.
+  renewItemsWeightBetween(start: number, end: number): Promise<TodoColumn> {
+    const { todoStorage } = this.props;
+    const { activeColumn } = this;
+    const partialTodoList = activeColumn.todoList.filter(
+      ({ weight }) => weight >= start && weight <= end,
+    );
+
+    const { length } = partialTodoList;
+    const diff = (end - start) / (partialTodoList.length - 1);
+    const newWeights = Array(length)
+      .fill(start)
+      .map((v, idx) => v + diff * idx);
+
+    newWeights[length - 1] = end;
+
+    // weight기준 오름차순 정렬이 되어있음
+    const newTodoList = partialTodoList.map((todoItem, idx) => ({
+      ...todoItem,
+      weight: newWeights[idx],
+    }));
+
+    return todoStorage
+      .renewItemsBetweenWeight(activeColumn.title, start, end, newTodoList)
+      .then((newColumn) => newColumn);
+  }
+
+  handleDropTodoSameColumn(
+    fromId: string,
+    toId: string,
     direction: 'up' | 'down',
   ) {
-    this.dropHandler(() => {});
+    this.dropHandler(async () => {
+      const { activeColumn } = this;
+      const { todoList: activeTodoList } = activeColumn;
+      const fromItemIndex = activeTodoList.findIndex(({ id }) => id === fromId);
+      const toItemIndex = activeTodoList.findIndex(({ id }) => id === toId);
+      const firstItem = activeTodoList.at(0);
+      const lastItem = activeTodoList.at(-1);
+      const fromItem = activeTodoList.at(fromItemIndex);
+      const toItem = activeTodoList.at(toItemIndex);
+      const toItemPrev = activeTodoList.at(toItemIndex - 1);
+      const toItemNext = activeTodoList.at(toItemIndex + 1);
+
+      if (!firstItem || !lastItem || !fromItem || !toItem) return;
+      const draggedItem = { ...fromItem };
+
+      // 양 끝
+      if (firstItem === toItem && direction === 'up') {
+        draggedItem.weight = firstItem.weight - 1;
+        await this.handleEditTodo(draggedItem);
+        return;
+      }
+
+      if (lastItem === toItem && direction === 'down') {
+        draggedItem.weight = lastItem.weight + 1;
+        await this.handleEditTodo(draggedItem);
+        return;
+      }
+
+      // 사이
+      let prev;
+      let next;
+
+      if (direction === 'up' && toItemPrev) {
+        prev = toItemPrev;
+        next = toItem;
+      } else if (direction === 'down' && toItemNext) {
+        prev = toItem;
+        next = toItemNext;
+      } else throw new Error('Unknown Error');
+
+      if (this.validateMiddleWeight(prev, next)) {
+        draggedItem.weight = this.getMiddleWeight(prev, next);
+        await this.handleEditTodo(draggedItem);
+        return;
+      }
+
+      const start = Math.floor(prev.weight);
+      const end = Math.ceil(next.weight + 1);
+
+      const { todoList: newPartialTodoList } =
+        await this.renewItemsWeightBetween(start, end);
+
+      const { todoColumns } = this.state;
+
+      this.setState({
+        todoColumns: todoColumns.map((todoColumn) => {
+          if (todoColumn.title !== activeColumn.title) return todoColumn;
+
+          const todoList = todoColumn.todoList;
+
+          const startIndex = todoList.findIndex(
+            (item) => (newPartialTodoList.at(0) as TodoItem).id === item.id,
+          );
+          const endIndex = todoList.findIndex(
+            (item) => (newPartialTodoList.at(-1) as TodoItem).id === item.id,
+          );
+
+          return {
+            title: activeColumn.title,
+            todoList: [
+              ...todoList.slice(0, startIndex),
+              ...newPartialTodoList,
+              ...todoList.slice(endIndex + 1),
+            ],
+          };
+        }),
+      });
+
+      alert(
+        '아이템의 정렬 값이 충돌하여 수치를 재조절하였습니다. 다시 시도해주세요.',
+      );
+    });
   }
 
   async handleDropTodoOtherColumn(
