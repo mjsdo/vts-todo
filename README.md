@@ -20,3 +20,20 @@
 
 ### [링크](https://d21r2inxv1rwwi.cloudfront.net/)
 
+## 기능
+
+<details>
+    <summary>CRUD</summary>
+    <img src="https://user-images.githubusercontent.com/79135734/214511382-c5f9a2ce-a278-4223-8f33-f2f51e69bc0b.gif" />
+</details>
+
+<br />
+
+<details>
+    <summary>Drag & Drop</summary>
+    <img src="https://user-images.githubusercontent.com/79135734/214511645-2e6f2bfb-ccbe-4edf-b0af-4b5fabe9bc36.gif" />
+</details>
+
+<br />
+<br />
+<br />
