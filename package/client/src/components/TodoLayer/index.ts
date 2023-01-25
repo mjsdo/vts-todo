@@ -287,6 +287,14 @@ export default class TodoLayer extends Component<State, Props> {
       const toItemNext = activeTodoList.at(toItemIndex + 1);
 
       if (!firstItem || !lastItem || !fromItem || !toItem) return;
+
+      if (
+        // 위치가 바뀌지 않는 경우
+        (direction === 'down' && toItemNext === fromItem) ||
+        (direction === 'up' && toItemPrev === fromItem)
+      )
+        return;
+
       const draggedItem = { ...fromItem };
 
       // 양 끝
