@@ -17,6 +17,11 @@ export interface Props {
   handleAddTodo?: (todoItem: TodoItemInputValues) => void;
   handleEditTodo?: (todoItem: TodoItem) => void;
   handleDeleteTodo?: (itemKey: string) => void;
+  handleDropTodoSameColumn?: (
+    fromItem: string,
+    toItem: string,
+    direction: 'up' | 'down',
+  ) => void;
 }
 
 export interface State {
@@ -149,6 +154,37 @@ export default class TodoCard extends Component<State, Props> {
 
       if (!$card) return;
       $card.classList.remove('dragging');
+    });
+
+    /* handleDragOverCard */
+    this.on('dragover', '.todo-card', (e) => {
+      e.preventDefault();
+    });
+
+    /* handleDropToCard */
+    this.on('drop', '.todo-card', (e) => {
+      const $toCard = (e.target as HTMLElement).closest(
+        '.todo-card',
+      ) as HTMLElement;
+      const toCardId = this.props.todoItem.id;
+      const fromCardId = e.dataTransfer!.getData(
+        DRAG_KEY.TODO_ITEM_ID,
+      ) as string;
+
+      if (toCardId === fromCardId) return;
+
+      const { handleDropTodoSameColumn } = this.props;
+
+      if (!handleDropTodoSameColumn)
+        throw new Error('handleDropTodoSameColumn 메서드 누락');
+
+      const { y, height } = $toCard.getBoundingClientRect();
+      const midY = y + height / 2;
+      const { clientY } = e;
+
+      const direction = clientY < midY ? 'up' : 'down';
+
+      handleDropTodoSameColumn(fromCardId, toCardId, direction);
     });
   }
 
