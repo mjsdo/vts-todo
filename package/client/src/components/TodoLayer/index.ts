@@ -9,6 +9,7 @@ import Component from '@core/Component';
 import { wrap } from '@core/Component/util';
 import { zip } from '@utils/array';
 import { classnames as cn } from '@utils/dom';
+import sanitizeHtml from 'sanitize-html';
 
 import './styles.scss';
 
@@ -32,6 +33,18 @@ const initialTodoAddItem = {
 
 const INITIAL_WEIGHT = 101;
 
+const sanitizeTodoItem = <I extends Pick<TodoItem, 'title' | 'body'>>(
+  todoItem: I,
+): I => {
+  const options = { allowedTags: [], allowedAttributes: {} };
+
+  return {
+    ...todoItem,
+    title: sanitizeHtml(todoItem.title, options),
+    body: sanitizeHtml(todoItem.body, options),
+  };
+};
+
 export default class TodoLayer extends Component<State, Props> {
   state: State = {
     todoColumns: [],
@@ -39,6 +52,7 @@ export default class TodoLayer extends Component<State, Props> {
   };
   activeColumn: TodoColumn = { title: 'todo', todoList: [] };
   dropHandlerSettled = true;
+  listScrollTop = 0;
 
   effect() {
     const { todoColumns: _todoColumns } = this.state;
@@ -192,6 +206,10 @@ export default class TodoLayer extends Component<State, Props> {
         handleDropTodoSameColumn,
       });
     });
+
+    const $todoList = this.$<HTMLElement>('.todo-list');
+
+    this.loadScrollTop($todoList);
   }
 
   sortByWeight(todoList: TodoItem[]) {
@@ -219,6 +237,7 @@ export default class TodoLayer extends Component<State, Props> {
     try {
       if (!this.dropHandlerSettled) return;
       this.dropHandlerSettled = false;
+      this.saveScrollTop();
 
       fn();
     } catch (error) {
@@ -283,8 +302,8 @@ export default class TodoLayer extends Component<State, Props> {
       const lastItem = activeTodoList.at(-1);
       const fromItem = activeTodoList.at(fromItemIndex);
       const toItem = activeTodoList.at(toItemIndex);
-      const toItemPrev = activeTodoList.at(toItemIndex - 1);
-      const toItemNext = activeTodoList.at(toItemIndex + 1);
+      const toItemPrev = activeTodoList[toItemIndex - 1];
+      const toItemNext = activeTodoList[toItemIndex + 1];
 
       if (!firstItem || !lastItem || !fromItem || !toItem) return;
 
@@ -409,8 +428,10 @@ export default class TodoLayer extends Component<State, Props> {
       ({ title }) => title === columnTitle,
     )?.todoList as TodoItem[];
 
+    const sanitizedInputs = sanitizeTodoItem(inputs);
+
     const minWeight = this.getMinWeight(_todoList);
-    const userInputsWithWeight = { ...inputs, weight: minWeight - 1 };
+    const userInputsWithWeight = { ...sanitizedInputs, weight: minWeight - 1 };
 
     todoStorage
       .addTodoItem(columnTitle, userInputsWithWeight)
@@ -434,8 +455,10 @@ export default class TodoLayer extends Component<State, Props> {
     const newState = { ...this.state };
     const columnTitle = newState.activeColumnTitle;
 
+    const sanitizedInput = sanitizeTodoItem(inputs);
+
     todoStorage
-      .updateTodoItem(columnTitle, inputs)
+      .updateTodoItem(columnTitle, sanitizedInput)
       .then((editedItem) => {
         newState.todoColumns = newState.todoColumns.map((column) => {
           const { title, todoList } = column;
@@ -485,6 +508,21 @@ export default class TodoLayer extends Component<State, Props> {
     if (error instanceof Error) {
       console.error(error.message);
       alertMessage ? alert(alertMessage) : alert(error.message);
+    }
+  }
+
+  saveScrollTop() {
+    const $todoList = this.$<HTMLElement>('.todo-list');
+
+    this.listScrollTop = $todoList.scrollTop;
+  }
+
+  loadScrollTop($element: HTMLElement) {
+    if ($element) {
+      requestAnimationFrame(() => {
+        $element.scrollTop = this.listScrollTop;
+        this.listScrollTop = 0;
+      });
     }
   }
 }

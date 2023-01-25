@@ -4,6 +4,7 @@ import AlertBox from '@components/AlertBox';
 import { DeleteIcon, EditIcon } from '@components/Icons';
 import DRAG_KEY from '@constants/dragKey';
 import Component from '@core/Component';
+import { wrap } from '@core/Component/util';
 import modalStore from '@stores/modalStore';
 import { formatDateToKRLocaleString } from '@utils/date';
 import { pick, shallowEqual, throttle } from '@utils/dom';
@@ -70,7 +71,7 @@ export default class TodoCard extends Component<State, Props> {
 
         if (!this.validateInputLength(inputValues)) {
           alert(
-            `제목은 ${MAX_TITLE_LENGTH}자 이하, 본문은 ${MAX_BODY_LENGTH}이하만 가능합니다.`,
+            `제목은 1~${MAX_TITLE_LENGTH}자, 본문은 1~${MAX_BODY_LENGTH}자만 가능합니다.`,
           );
           return;
         }
@@ -202,13 +203,14 @@ export default class TodoCard extends Component<State, Props> {
         ${
           isEditOrCreateMode
             ? `
-        <header class="mb-6 text-s16 font-bold">
+        <header class="mb-6 text-s18 font-bold">
           <input 
             placeholder="제목을 입력하세요" 
             class="todo-item-field todo-item-title-field" 
             type="text" 
             maxlength="${MAX_TITLE_LENGTH}"
             value="${title}"
+            spellcheck="false"
           />
         </header>
         <div class="mb-8 text-s14">
@@ -217,6 +219,7 @@ export default class TodoCard extends Component<State, Props> {
             class="todo-item-field todo-item-body-field" 
             rows="5"
             maxlength="${MAX_BODY_LENGTH}"
+            spellcheck="false"
           >${body}</textarea>
         </div>
         <div class="flex gap-10 pt-8">
@@ -224,11 +227,11 @@ export default class TodoCard extends Component<State, Props> {
           <button class="todo-form-submit-button button button-accent grow" type="button" disabled>확인</button>
         </div>`
             : `
-        <header class="mb-8 text-s16 font-bold">
-          <strong>${title}</strong> 
+        <header class="mb-8 text-s18 font-bold overflow-x-auto flex">
+          <strong class="pr-60 break-all">${title}</strong> 
         </header>
         <div class="mb-8 text-s14">
-          <p>${body}</p>
+          ${wrap(body.split('\n')).map(this.toHTMLString)}
         </div>
         <div class="text-s12 text-footer">
           <time>${formatDateToKRLocaleString(createdAt)}</time>
@@ -252,9 +255,21 @@ export default class TodoCard extends Component<State, Props> {
   }
 
   validateInputLength(inputValues: TodoItemInputValues) {
-    const { title, body } = inputValues;
+    let { title, body } = inputValues;
 
-    return title.length <= MAX_TITLE_LENGTH && body.length <= MAX_BODY_LENGTH;
+    title = title.trim();
+    body = body.trim();
+
+    return (
+      title.length &&
+      title.length <= MAX_TITLE_LENGTH &&
+      body.length &&
+      body.length <= MAX_BODY_LENGTH
+    );
+  }
+
+  toHTMLString(row: string) {
+    return row === `` ? `<p><br /></p>` : `<p>${row}</p>`;
   }
 }
 
