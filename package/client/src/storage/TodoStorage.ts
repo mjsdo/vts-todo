@@ -147,4 +147,17 @@ export default class TodoStorage {
       todoList,
     };
   }
+
+  async renewItemsBetween(columnTitle: ColumnTitle, values: TodoItem[]) {
+    const db = this.getDB();
+
+    const todoList = await Promise.all(
+      values.map((value) => db.put<TodoItem>(columnTitle, value.id, value)),
+    );
+
+    return {
+      title: columnTitle,
+      todoList,
+    };
+  }
 }

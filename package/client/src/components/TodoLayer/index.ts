@@ -265,7 +265,7 @@ export default class TodoLayer extends Component<State, Props> {
     }));
 
     return todoStorage
-      .renewItemsBetweenWeight(activeColumn.title, start, end, newTodoList)
+      .renewItemsBetween(activeColumn.title, newTodoList)
       .then((newColumn) => newColumn);
   }
 
