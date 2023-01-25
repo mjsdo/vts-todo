@@ -22,3 +22,11 @@
 .todo-item-body-field {
   resize: vertical;
 }
+
+.todo-item {
+  margin-left: 10px;
+  margin-right: 10px;
+  .dragging {
+    opacity: 0.5;
+  }
+}

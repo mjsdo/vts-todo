@@ -2,6 +2,7 @@ import type { TodoItem } from '@storage/type';
 
 import AlertBox from '@components/AlertBox';
 import { DeleteIcon, EditIcon } from '@components/Icons';
+import DRAG_KEY from '@constants/dragKey';
 import Component from '@core/Component';
 import modalStore from '@stores/modalStore';
 import { formatDateToKRLocaleString } from '@utils/date';
@@ -16,6 +17,11 @@ export interface Props {
   handleAddTodo?: (todoItem: TodoItemInputValues) => void;
   handleEditTodo?: (todoItem: TodoItem) => void;
   handleDeleteTodo?: (itemKey: string) => void;
+  handleDropTodoSameColumn?: (
+    fromItem: string,
+    toItem: string,
+    direction: 'up' | 'down',
+  ) => void;
 }
 
 export interface State {
@@ -131,6 +137,55 @@ export default class TodoCard extends Component<State, Props> {
           }),
       });
     });
+
+    /* handleCardDragStart */
+    this.on('dragstart', '.todo-card', (e) => {
+      const $card = (e.target as HTMLElement).closest('.todo-card');
+
+      if (!$card) return;
+
+      e.dataTransfer?.setData(DRAG_KEY.TODO_ITEM_ID, this.props.todoItem.id);
+      $card.classList.add('dragging');
+    });
+
+    /* handleCardDragEnd */
+    this.on('dragend', '.todo-card', (e) => {
+      const $card = (e.target as HTMLElement).closest('.todo-card');
+
+      if (!$card) return;
+      $card.classList.remove('dragging');
+    });
+
+    /* handleDragOverCard */
+    this.on('dragover', '.todo-card', (e) => {
+      e.preventDefault();
+    });
+
+    /* handleDropToCard */
+    this.on('drop', '.todo-card', (e) => {
+      const $toCard = (e.target as HTMLElement).closest(
+        '.todo-card',
+      ) as HTMLElement;
+      const toCardId = this.props.todoItem.id;
+      const fromCardId = e.dataTransfer!.getData(
+        DRAG_KEY.TODO_ITEM_ID,
+      ) as string;
+
+      if (toCardId === fromCardId) return;
+
+      const { handleDropTodoSameColumn } = this.props;
+
+      if (!handleDropTodoSameColumn)
+        throw new Error('handleDropTodoSameColumn 메서드 누락');
+
+      const { y, height } = $toCard.getBoundingClientRect();
+      const midY = y + height / 2;
+      const { clientY } = e;
+
+      const direction = clientY < midY ? 'up' : 'down';
+
+      handleDropTodoSameColumn(fromCardId, toCardId, direction);
+    });
   }
 
   render() {
@@ -140,9 +195,10 @@ export default class TodoCard extends Component<State, Props> {
 
     const { mode } = this.state;
     const isEditOrCreateMode = ['edit', 'create'].includes(mode);
+    const draggable = mode === 'read';
 
     return `
-      <div class="todo-card bg-card rounded-xl p-16 shadow border border-solid border-transparent relative">
+      <div class="todo-card bg-card rounded-xl p-16 shadow border border-solid border-transparent relative" draggable="${draggable}">
         ${
           isEditOrCreateMode
             ? `

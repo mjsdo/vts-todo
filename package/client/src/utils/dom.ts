@@ -18,10 +18,7 @@ export const classnames = (
     .join(' ');
 };
 
-export const throttle = <P extends unknown[]>(
-  fn: (...args: P) => void,
-  timeout: number,
-) => {
+export const throttle = (fn: (...args: any[]) => void, timeout: number) => {
   let timer: NodeJS.Timer | null = null;
 
   return (...args: Parameters<typeof fn>) => {
@@ -56,8 +53,9 @@ const keyboardFocusableSelectors = [
   'select',
   'details',
   '[tabindex]:not([tabindex="-1"])',
-];
+] as const;
 
-export const getKeyboardFocusableElements = (
-  base: BaseNode = document,
-) => [...base.querySelectorAll(keyboardFocusableSelectors.join(','))] as HTMLElement[];
+export const getKeyboardFocusableElements = (base: BaseNode = document) =>
+  [
+    ...base.querySelectorAll(keyboardFocusableSelectors.join(',')),
+  ] as HTMLElement[];
