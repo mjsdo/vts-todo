@@ -70,7 +70,7 @@ export default class TodoCard extends Component<State, Props> {
 
         if (!this.validateInputLength(inputValues)) {
           alert(
-            `제목은 ${MAX_TITLE_LENGTH}자 이하, 본문은 ${MAX_BODY_LENGTH}이하만 가능합니다.`,
+            `제목은 1~${MAX_TITLE_LENGTH}자, 본문은 1~${MAX_BODY_LENGTH}자만 가능합니다.`,
           );
           return;
         }
@@ -252,9 +252,17 @@ export default class TodoCard extends Component<State, Props> {
   }
 
   validateInputLength(inputValues: TodoItemInputValues) {
-    const { title, body } = inputValues;
+    let { title, body } = inputValues;
 
-    return title.length <= MAX_TITLE_LENGTH && body.length <= MAX_BODY_LENGTH;
+    title = title.trim();
+    body = body.trim();
+
+    return (
+      title.length &&
+      title.length <= MAX_TITLE_LENGTH &&
+      body.length &&
+      body.length <= MAX_BODY_LENGTH
+    );
   }
 }
 
