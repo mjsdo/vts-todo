@@ -203,7 +203,7 @@ export default class TodoCard extends Component<State, Props> {
         ${
           isEditOrCreateMode
             ? `
-        <header class="mb-6 text-s16 font-bold">
+        <header class="mb-6 text-s18 font-bold">
           <input 
             placeholder="제목을 입력하세요" 
             class="todo-item-field todo-item-title-field" 
@@ -227,8 +227,8 @@ export default class TodoCard extends Component<State, Props> {
           <button class="todo-form-submit-button button button-accent grow" type="button" disabled>확인</button>
         </div>`
             : `
-        <header class="mb-8 text-s16 font-bold">
-          <strong>${title}</strong> 
+        <header class="mb-8 text-s18 font-bold overflow-x-auto flex">
+          <strong class="pr-60 break-all">${title}</strong> 
         </header>
         <div class="mb-8 text-s14">
           ${wrap(body.split('\n')).map(this.toHTMLString)}
