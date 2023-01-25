@@ -4,6 +4,7 @@ import AlertBox from '@components/AlertBox';
 import { DeleteIcon, EditIcon } from '@components/Icons';
 import DRAG_KEY from '@constants/dragKey';
 import Component from '@core/Component';
+import { wrap } from '@core/Component/util';
 import modalStore from '@stores/modalStore';
 import { formatDateToKRLocaleString } from '@utils/date';
 import { pick, shallowEqual, throttle } from '@utils/dom';
@@ -228,7 +229,7 @@ export default class TodoCard extends Component<State, Props> {
           <strong>${title}</strong> 
         </header>
         <div class="mb-8 text-s14">
-          <p>${body}</p>
+          ${wrap(body.split('\n')).map(this.toHTMLString)}
         </div>
         <div class="text-s12 text-footer">
           <time>${formatDateToKRLocaleString(createdAt)}</time>
@@ -263,6 +264,10 @@ export default class TodoCard extends Component<State, Props> {
       body.length &&
       body.length <= MAX_BODY_LENGTH
     );
+  }
+
+  toHTMLString(row: string) {
+    return row === `` ? `<p><br /></p>` : `<p>${row}</p>`;
   }
 }
 
