@@ -24,7 +24,7 @@ export default class TopBar extends Component<State> {
          <div>
            <button type="button" class="theme-button p-4">
              ${
-               theme === 'dark' ? DarkThemeIcon(textCn) : LightThemeIcon(textCn)
+               theme === 'dark' ? LightThemeIcon(textCn) : DarkThemeIcon(textCn)
              }
              <span class="sr-only">테마 변경</span>
            </button>
