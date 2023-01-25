@@ -14,4 +14,9 @@
 - 상태 기반 렌더링
 - 다크 모드 적용
 - IndexedDB 사용
-- 동일 컬럼 내에서 드래그앤 드롭
+- 드래그 앤 드롭
+
+## 배포
+
+### [링크](https://d21r2inxv1rwwi.cloudfront.net/)
+
