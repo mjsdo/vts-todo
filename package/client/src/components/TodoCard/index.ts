@@ -210,6 +210,7 @@ export default class TodoCard extends Component<State, Props> {
             type="text" 
             maxlength="${MAX_TITLE_LENGTH}"
             value="${title}"
+            spellcheck="false"
           />
         </header>
         <div class="mb-8 text-s14">
@@ -218,6 +219,7 @@ export default class TodoCard extends Component<State, Props> {
             class="todo-item-field todo-item-body-field" 
             rows="5"
             maxlength="${MAX_BODY_LENGTH}"
+            spellcheck="false"
           >${body}</textarea>
         </div>
         <div class="flex gap-10 pt-8">
