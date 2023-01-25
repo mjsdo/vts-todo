@@ -68,6 +68,45 @@ export default class IDB {
     });
   }
 
+  /* cursor key로 사용한 index값이 변경되면 안되서 오류?
+  putAll<V extends Record<string, any> = Record<string, any>>(
+    storeName: string,
+    keyRange: IDBKeyRange,
+    values: V[],
+    index: string | undefined = 'weight',
+  ): Promise<V[]> {
+    return new Promise((resolve, reject) => {
+      const objectStore = this.getObjectStore(storeName, MODE.RW);
+
+      const request = index
+        ? objectStore.index(index).openCursor(keyRange)
+        : objectStore.openCursor(keyRange);
+
+      const newValues: V[] = [];
+      let i = -1;
+
+      request.onsuccess = () => {
+        const cursor = request.result as IDBCursorWithValue;
+
+        if (!cursor) resolve(newValues);
+
+        if (cursor) {
+          i += 1;
+          const newValue = values[i];
+
+          const updateRequest = cursor.update(newValue);
+
+          newValues.push(newValue);
+          updateRequest.onsuccess = () => cursor.continue();
+          updateRequest.onerror = () => reject(updateRequest.error);
+        }
+      };
+
+      request.onerror = () => reject(request.error);
+    });
+  }
+  */
+
   getAll<V>(storeName: string): Promise<V> {
     const store = this.getObjectStore(storeName, MODE.R);
 
