@@ -9,6 +9,7 @@ import Component from '@core/Component';
 import { wrap } from '@core/Component/util';
 import { zip } from '@utils/array';
 import { classnames as cn } from '@utils/dom';
+import sanitizeHtml from 'sanitize-html';
 
 import './styles.scss';
 
@@ -31,6 +32,18 @@ const initialTodoAddItem = {
 };
 
 const INITIAL_WEIGHT = 101;
+
+const sanitizeTodoItem = <I extends Pick<TodoItem, 'title' | 'body'>>(
+  todoItem: I,
+): I => {
+  const options = { allowedTags: [], allowedAttributes: {} };
+
+  return {
+    ...todoItem,
+    title: sanitizeHtml(todoItem.title, options),
+    body: sanitizeHtml(todoItem.body, options),
+  };
+};
 
 export default class TodoLayer extends Component<State, Props> {
   state: State = {
@@ -415,8 +428,10 @@ export default class TodoLayer extends Component<State, Props> {
       ({ title }) => title === columnTitle,
     )?.todoList as TodoItem[];
 
+    const sanitizedInputs = sanitizeTodoItem(inputs);
+
     const minWeight = this.getMinWeight(_todoList);
-    const userInputsWithWeight = { ...inputs, weight: minWeight - 1 };
+    const userInputsWithWeight = { ...sanitizedInputs, weight: minWeight - 1 };
 
     todoStorage
       .addTodoItem(columnTitle, userInputsWithWeight)
@@ -440,8 +455,10 @@ export default class TodoLayer extends Component<State, Props> {
     const newState = { ...this.state };
     const columnTitle = newState.activeColumnTitle;
 
+    const sanitizedInput = sanitizeTodoItem(inputs);
+
     todoStorage
-      .updateTodoItem(columnTitle, inputs)
+      .updateTodoItem(columnTitle, sanitizedInput)
       .then((editedItem) => {
         newState.todoColumns = newState.todoColumns.map((column) => {
           const { title, todoList } = column;
